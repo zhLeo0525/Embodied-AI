@@ -33,6 +33,12 @@
 /Users/leo/venvs/drake/bin/python ex3_4_stability_linearization.py
 ```
 
+**题目原文来源说明：** 课程 PDF 中 Section 3.8 只保留了题目标题（网页打印时正文/交互内容未渲染），因此 Exercise 3.3、3.4 的完整题目文本取自课程作业清单中给出的官方链接
+[underactuated.csail.mit.edu/acrobot.html#section8](https://underactuated.csail.mit.edu/acrobot.html#section8)；
+Exercise 3.3 的网格图取自官方仓库的 `2d_grid_double_integrator.svg`，Exercise 3.2 的双摆几何参考了官方 `double-pendulum-cart-pole.png`。
+3.4 的题目只给出 $m=l=1$、零力矩和阻尼系数 $b$，未写出显式方程；本解答采用标准阻尼单摆模型
+$m l^2\ddot\theta+b\dot\theta+m g l\sin\theta=0$（$m=l=1$ 时即 $\ddot\theta=-g\sin\theta-b\dot\theta$）。
+
 Autograder 结果：
 
 | Notebook | 得分 |
@@ -395,6 +401,10 @@ $$
 
 ### (a.2) 从 $s_{0,0}$ 到 $s_{i,j}$（$j>i>0$）的最少步数
 
+题目明确说明 $u[n]$ 可以取**任意整数**（不是只取 $\{-1,0,1\}$）；下面的“2 步”结论依赖这一点。
+如果额外限制 $|u[n]|\le1$，最少步数会随 $i,j$ 增大，答案不同。
+
+
 从 $s_{i_1,j_1}$ 出发，$N$ 步后的状态为
 
 $$
@@ -525,6 +535,10 @@ $(A_1,B_1)$、$(A_2,B_2)$ 不能自然写成 $A=\begin{bmatrix}0&I\\ *&*\end{bma
 
 ## 4.1 模型与线性化
 
+题目未给出显式微分方程。这里采用标准单摆模型：转动惯量 $ml^2$、重力矩 $-mgl\sin\theta$、黏性阻尼矩 $-b\dot\theta$，零力矩时为
+$ml^2\ddot\theta+b\dot\theta+mgl\sin\theta=0$；代入 $m=l=1$ 得到下面的方程。
+若课程采用不同的阻尼定义（例如把 $b$ 定义为阻尼比），特征值会按相应系数缩放，但稳定性结论的结构不变。
+
 无阻尼/有阻尼单摆（$m=l=1$，$g=9.81$，零力矩）：
 
 $$
@@ -600,6 +614,8 @@ def jacobian(b, theta_star):
 | Nonlinear $b=1$, $\mathbf{x}^\star=(\pi,0)$ | N/A | N/A | ❌ | ❌ | ❌ |
 | Linearization $b=1$, $\mathbf{x}^\star=(0,0)$ | $-$ | $-$ | ✅ | ✅ | ✅ |
 | Linearization $b=1$, $\mathbf{x}^\star=(\pi,0)$ | $+$ | $-$ | ❌ | ❌ | ❌ |
+
+表中的稳定性结论均指**平衡点附近**的局部性质。特别是 $b=1$、下垂点：非线性系统由线性化（两个特征值实部为负）可知**局部指数稳定**；全局层面它是渐近稳定的，但不一定具有全局指数收敛速率。
 
 **几点讨论：**
 

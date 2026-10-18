@@ -5,8 +5,10 @@ The HTML is written next to the markdown file so that the relative image
 paths keep working.
 """
 
+import html as html_lib
 import os
 import pathlib
+import re
 import subprocess
 
 import mistune
@@ -111,10 +113,41 @@ window.MathJax = {{
 """
 
 
+def protect_math(text):
+    """Hide LaTeX from the Markdown parser.
+
+    Markdown treats ``\\\\`` as an escaped backslash, which destroys the row
+    separators of LaTeX matrices (and also eats escapes such as ``\\{``).
+    Each math segment is replaced by a plain token before the Markdown
+    renderer runs, then restored afterwards.
+    """
+    tokens = {}
+
+    def stash(value):
+        key = f"MATHTOKEN{len(tokens)}END"
+        tokens[key] = value
+        return key
+
+    text = re.sub(
+        r"\$\$.*?\$\$", lambda m: "\n\n" + stash(m.group(0)) + "\n\n",
+        text, flags=re.S,
+    )
+    text = re.sub(
+        r"(?<!\$)\$(?!\$).+?(?<!\$)\$(?!\$)",
+        lambda m: stash(m.group(0)),
+        text,
+        flags=re.S,
+    )
+    return text, tokens
+
+
 def main():
     text = MD.read_text(encoding="utf-8")
+    text, math_tokens = protect_math(text)
     renderer = mistune.create_markdown(escape=False, plugins=["table"])
     body = renderer(text)
+    for key, value in math_tokens.items():
+        body = body.replace(key, html_lib.escape(value, quote=False))
     html = HTML_TEMPLATE.format(css=CSS, body=body)
     HTML.write_text(html, encoding="utf-8")
 
