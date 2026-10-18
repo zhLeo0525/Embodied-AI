@@ -1,0 +1,43 @@
+{
+    "tests": [
+        {
+            "name": "Test double-pendulum cart-pole LQR states",
+            "score": 2,
+            "max_score": 2,
+            "status": "passed"
+        },
+        {
+            "name": "Test double-pendulum cart-pole dynamics",
+            "score": 3,
+            "max_score": 3,
+            "status": "passed"
+        },
+        {
+            "name": "Test single-pendulum cart-pole LQR states",
+            "score": 2,
+            "max_score": 2,
+            "status": "passed"
+        },
+        {
+            "name": "Test single-pendulum cart-pole dynamics",
+            "score": 3,
+            "max_score": 3,
+            "status": "passed"
+        },
+        {
+            "name": "Test x_star for double pendulum",
+            "score": 1,
+            "max_score": 1,
+            "status": "passed"
+        },
+        {
+            "name": "Test x_star for single pendulum",
+            "score": 1,
+            "max_score": 1,
+            "status": "passed"
+        }
+    ],
+    "leaderboard": [],
+    "execution_time": "0.01",
+    "score": 12
+}

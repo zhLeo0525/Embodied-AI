@@ -1,0 +1,530 @@
+{
+  "part_a": {
+    "minimum_steps_from_s00": 2,
+    "minimum_steps_arbitrary_start_goal": 2,
+    "two_step_tests": [
+      {
+        "start": [
+          0,
+          0
+        ],
+        "goal": [
+          1,
+          2
+        ],
+        "controls": [
+          1,
+          1
+        ],
+        "trajectory": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "reached_goal_in_2_steps": true
+      },
+      {
+        "start": [
+          0,
+          0
+        ],
+        "goal": [
+          2,
+          3
+        ],
+        "controls": [
+          2,
+          1
+        ],
+        "trajectory": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "reached_goal_in_2_steps": true
+      },
+      {
+        "start": [
+          0,
+          0
+        ],
+        "goal": [
+          2,
+          5
+        ],
+        "controls": [
+          2,
+          3
+        ],
+        "trajectory": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            5
+          ]
+        ],
+        "reached_goal_in_2_steps": true
+      },
+      {
+        "start": [
+          0,
+          0
+        ],
+        "goal": [
+          3,
+          7
+        ],
+        "controls": [
+          3,
+          4
+        ],
+        "trajectory": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            3,
+            7
+          ]
+        ],
+        "reached_goal_in_2_steps": true
+      },
+      {
+        "start": [
+          2,
+          -3
+        ],
+        "goal": [
+          -4,
+          5
+        ],
+        "controls": [
+          0,
+          8
+        ],
+        "trajectory": [
+          [
+            2,
+            -3
+          ],
+          [
+            -1,
+            -3
+          ],
+          [
+            -4,
+            5
+          ]
+        ],
+        "reached_goal_in_2_steps": true
+      },
+      {
+        "start": [
+          1,
+          2
+        ],
+        "goal": [
+          3,
+          0
+        ],
+        "controls": [
+          -2,
+          0
+        ],
+        "trajectory": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        "reached_goal_in_2_steps": true
+      },
+      {
+        "start": [
+          -1,
+          4
+        ],
+        "goal": [
+          2,
+          -2
+        ],
+        "controls": [
+          -5,
+          -1
+        ],
+        "trajectory": [
+          [
+            -1,
+            4
+          ],
+          [
+            3,
+            -1
+          ],
+          [
+            2,
+            -2
+          ]
+        ],
+        "reached_goal_in_2_steps": true
+      }
+    ]
+  },
+  "part_b": {
+    "pairs": [
+      {
+        "name": "(A1, B1)",
+        "A": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0
+          ]
+        ],
+        "B": [
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "controllability_matrix": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            1.0
+          ]
+        ],
+        "rank": 1,
+        "n": 2,
+        "controllable": false,
+        "singular_values": [
+          1.4142135623730951,
+          0.0
+        ],
+        "condition_number": null,
+        "eigenvalues_A": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0
+          ]
+        ],
+        "pbh": [
+          {
+            "eigenvalue": [
+              1.0,
+              0.0
+            ],
+            "pbh_rank": 1,
+            "full_rank": false
+          }
+        ]
+      },
+      {
+        "name": "(A2, B2)",
+        "A": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0
+          ]
+        ],
+        "B": [
+          [
+            1.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "controllability_matrix": [
+          [
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0
+          ]
+        ],
+        "rank": 1,
+        "n": 2,
+        "controllable": false,
+        "singular_values": [
+          2.0,
+          1.434936932798653e-17
+        ],
+        "condition_number": null,
+        "eigenvalues_A": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0
+          ]
+        ],
+        "pbh": [
+          {
+            "eigenvalue": [
+              1.0,
+              0.0
+            ],
+            "pbh_rank": 1,
+            "full_rank": false
+          }
+        ]
+      },
+      {
+        "name": "(A3, B3)",
+        "A": [
+          [
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "B": [
+          [
+            0.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "controllability_matrix": [
+          [
+            0.0,
+            1.0
+          ],
+          [
+            1.0,
+            0.0
+          ]
+        ],
+        "rank": 2,
+        "n": 2,
+        "controllable": true,
+        "singular_values": [
+          1.0,
+          1.0
+        ],
+        "condition_number": 1.0,
+        "eigenvalues_A": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "pbh": [
+          {
+            "eigenvalue": [
+              0.0,
+              0.0
+            ],
+            "pbh_rank": 2,
+            "full_rank": true
+          }
+        ]
+      },
+      {
+        "name": "(A4, B4)",
+        "A": [
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            2.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "B": [
+          [
+            0.0
+          ],
+          [
+            0.0
+          ],
+          [
+            1.0
+          ],
+          [
+            1.0
+          ]
+        ],
+        "controllability_matrix": [
+          [
+            0.0,
+            1.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            2.0
+          ],
+          [
+            1.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            2.0,
+            0.0
+          ]
+        ],
+        "rank": 4,
+        "n": 4,
+        "controllable": true,
+        "singular_values": [
+          2.618033988749895,
+          2.6180339887498945,
+          0.38196601125010515,
+          0.3819660112501051
+        ],
+        "condition_number": 6.854101966249686,
+        "eigenvalues_A": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            1.4142135623730951,
+            0.0
+          ],
+          [
+            -1.414213562373095,
+            0.0
+          ]
+        ],
+        "pbh": [
+          {
+            "eigenvalue": [
+              -1.414213562373095,
+              0.0
+            ],
+            "pbh_rank": 4,
+            "full_rank": true
+          },
+          {
+            "eigenvalue": [
+              0.0,
+              0.0
+            ],
+            "pbh_rank": 4,
+            "full_rank": true
+          },
+          {
+            "eigenvalue": [
+              1.4142135623730951,
+              0.0
+            ],
+            "pbh_rank": 4,
+            "full_rank": true
+          }
+        ]
+      }
+    ],
+    "underactuation": {
+      "(A3, B3)": {
+        "n_dof": 1,
+        "n_actuators": 1,
+        "underactuated": false,
+        "reason": "q is scalar; B3 drives qddot directly."
+      },
+      "(A4, B4)": {
+        "n_dof": 2,
+        "n_actuators": 1,
+        "underactuated": true,
+        "reason": "q = [x, theta]; only x is actuated, theta is not."
+      },
+      "remark": "(A1, B1) and (A2, B2) are not naturally written as second-order systems with A = [[0, I], [*, *]], so the underactuation definition does not apply to them."
+    }
+  }
+}
