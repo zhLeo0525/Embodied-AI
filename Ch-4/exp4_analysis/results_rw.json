@@ -1,0 +1,54 @@
+{
+  "alpha": 0.39269908169872414,
+  "length": 1.0,
+  "gravity": 9.81,
+  "slopes": [
+    {
+      "gamma": 0.02,
+      "omega1": 1.160583381972449,
+      "omega_star": 0.5480054161441996,
+      "rolling_fixed_point_exists": false,
+      "multiplier_cos2_2alpha": 0.5000000000000001
+    },
+    {
+      "gamma": 0.05,
+      "omega1": 1.0681202894622954,
+      "omega_star": 0.8663210084590376,
+      "rolling_fixed_point_exists": false,
+      "multiplier_cos2_2alpha": 0.5000000000000001
+    },
+    {
+      "gamma": 0.08,
+      "omega1": 0.9754168743931118,
+      "omega_star": 1.0954628396476571,
+      "rolling_fixed_point_exists": true,
+      "multiplier_cos2_2alpha": 0.5000000000000001
+    },
+    {
+      "gamma": 0.12,
+      "omega1": 0.8514745437302635,
+      "omega_star": 1.3407677306987908,
+      "rolling_fixed_point_exists": true,
+      "multiplier_cos2_2alpha": 0.5000000000000001
+    },
+    {
+      "gamma": 0.2,
+      "omega1": 0.6026178585171869,
+      "omega_star": 1.7272282958249294,
+      "rolling_fixed_point_exists": true,
+      "multiplier_cos2_2alpha": 0.5000000000000001
+    }
+  ],
+  "cobweb_gamma": 0.08,
+  "cobweb_iterates": [
+    2.0,
+    1.6124575704571127,
+    1.37841543983905,
+    1.2450036059858602,
+    1.1726194634165645,
+    1.1346971488093773,
+    1.115252539240561,
+    1.1054019765070595,
+    1.100443629341054
+  ]
+}

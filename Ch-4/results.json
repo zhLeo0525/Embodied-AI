@@ -1,0 +1,20 @@
+{
+    "tests": [
+        {
+            "name": "Test mechanical energy",
+            "score": 3,
+            "max_score": 3,
+            "status": "passed"
+        },
+        {
+            "name": "Test preload controller",
+            "score": 10,
+            "max_score": 10,
+            "status": "passed",
+            "output": "\n/Users/leo/venvs/drake/lib/python3.12/site-packages/matplotlib/animation.py:920: UserWarning: Animation was deleted without rendering anything. This is most likely not intended. To prevent deletion, assign the Animation to a variable, e.g. `anim`, that exists until you output the Animation using `plt.show()` or `anim.save()`.\n  warnings.warn(\n"
+        }
+    ],
+    "leaderboard": [],
+    "execution_time": "3.77",
+    "score": 13
+}

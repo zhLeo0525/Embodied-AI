@@ -1,0 +1,164 @@
+{
+  "target_height_sweep": [
+    {
+      "h": 0.5,
+      "initial_state": [
+        0.5,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 0.49852557879152537,
+      "final_two_second_min_height": -0.4282135868337854,
+      "final_two_second_mean_height": 0.11206805853184089,
+      "height_error": -0.00147442120847463,
+      "max_preload": 0.02431154689758512,
+      "max_body_height": 0.5
+    },
+    {
+      "h": 0.75,
+      "initial_state": [
+        0.5,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 0.7476863577563995,
+      "final_two_second_min_height": -0.4961658875835215,
+      "final_two_second_mean_height": 0.2268595055934698,
+      "height_error": -0.0023136422436005333,
+      "max_preload": 0.09312968293414721,
+      "max_body_height": 0.7477294339028562
+    },
+    {
+      "h": 1.0,
+      "initial_state": [
+        0.5,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 0.9965889717825456,
+      "final_two_second_min_height": -0.5546459696130123,
+      "final_two_second_mean_height": 0.4027654951995731,
+      "height_error": -0.003411028217454426,
+      "max_preload": 0.1626330905887351,
+      "max_body_height": 0.9970396974519623
+    },
+    {
+      "h": 1.25,
+      "initial_state": [
+        0.5,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 1.244390037497664,
+      "final_two_second_min_height": -0.6042251838584243,
+      "final_two_second_mean_height": 0.6164768538886567,
+      "height_error": -0.00560996250233603,
+      "max_preload": 0.232136498243323,
+      "max_body_height": 1.2469888336162473
+    },
+    {
+      "h": 1.5,
+      "initial_state": [
+        0.5,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 1.4946150187446787,
+      "final_two_second_min_height": -0.6495831822498036,
+      "final_two_second_mean_height": 0.44255188437124965,
+      "height_error": -0.005384981255321275,
+      "max_preload": 0.30163990589791084,
+      "max_body_height": 1.4946695099119536
+    }
+  ],
+  "initial_height_sweep": [
+    {
+      "z0": 0.1,
+      "initial_state": [
+        0.1,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 0.9965886630390637,
+      "final_two_second_min_height": -0.5546462710410129,
+      "final_two_second_mean_height": 0.2875616836610544,
+      "height_error": -0.0034113369609363176,
+      "max_preload": 0.40326267218321216,
+      "max_body_height": 0.998509964323307
+    },
+    {
+      "z0": 0.3,
+      "initial_state": [
+        0.3,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 0.9965887341549551,
+      "final_two_second_min_height": -0.5546463007441786,
+      "final_two_second_mean_height": 0.3461844016078977,
+      "height_error": -0.0034112658450449196,
+      "max_preload": 0.24740171668531913,
+      "max_body_height": 0.9977263182364186
+    },
+    {
+      "z0": 0.5,
+      "initial_state": [
+        0.5,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 0.9965889717825456,
+      "final_two_second_min_height": -0.5546459696130123,
+      "final_two_second_mean_height": 0.4027654951995731,
+      "height_error": -0.003411028217454426,
+      "max_preload": 0.1626330905887351,
+      "max_body_height": 0.9970396974519623
+    },
+    {
+      "z0": 0.8,
+      "initial_state": [
+        0.8,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 0.9965893217667163,
+      "final_two_second_min_height": -0.5546465313803514,
+      "final_two_second_mean_height": 0.46962141501170407,
+      "height_error": -0.0034106782332836705,
+      "max_preload": 0.07752383392927253,
+      "max_body_height": 0.9966421107531087
+    },
+    {
+      "z0": 1.0,
+      "initial_state": [
+        1.0,
+        0,
+        0,
+        0
+      ],
+      "final_two_second_max_height": 0.9965888099287212,
+      "final_two_second_min_height": -0.5517889118519358,
+      "final_two_second_mean_height": 0.49868292698346567,
+      "height_error": -0.003411190071278769,
+      "max_preload": 0.037353940375812744,
+      "max_body_height": 1.0
+    }
+  ],
+  "nominal_metrics": {
+    "final_two_second_max_height": 0.9965886630390637,
+    "final_two_second_min_height": -0.5546462710410129,
+    "final_two_second_mean_height": 0.2875616836610544,
+    "height_error": -0.0034113369609363176,
+    "max_preload": 0.40326267218321216,
+    "max_body_height": 0.998509964323307
+  }
+}
