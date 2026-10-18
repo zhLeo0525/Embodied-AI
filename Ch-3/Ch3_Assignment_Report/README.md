@@ -43,4 +43,4 @@ relevant plots.
 ## Before submitting
 
 Fill in your name and student ID in the title page of `Ch3_Report.tex`
-(currently `Leo` and a blank student-ID line) and recompile.
+(currently Zihao Liu / 220261979) and recompile.
