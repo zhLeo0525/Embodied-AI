@@ -16,6 +16,20 @@
 \usepackage{listings}
 \usepackage{microtype}
 \usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,decorations.pathmorphing,angles,quotes}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+
+\newtcolorbox{intuition}[1][]{
+  enhanced,breakable,colback=blue!4,colframe=blue!45!black,
+  title=Intuition,fonttitle=\bfseries,left=4pt,right=4pt,top=4pt,bottom=4pt,#1}
+\newtcolorbox{pitfall}[1][]{
+  enhanced,breakable,colback=red!3,colframe=red!55!black,
+  title=Common pitfall,fonttitle=\bfseries,left=4pt,right=4pt,top=4pt,bottom=4pt,#1}
+\newtcolorbox{recipe}[1][]{
+  enhanced,breakable,colback=green!3,colframe=green!45!black,
+  title=Recipe,fonttitle=\bfseries,left=4pt,right=4pt,top=4pt,bottom=4pt,#1}
 
 \hypersetup{
   colorlinks=true,
@@ -110,6 +124,65 @@ The Section~4.6 autograder result is
 \texttt{Total score is 13/13.}
 \end{center}
 
+\subsection*{How to read this report}
+
+The report has three layers: \emph{models}, \emph{simulations} and
+\emph{interpretation}.  If an equation looks dense, read the
+\textbf{Intuition} boxes first: they give the physical picture without
+algebra.  The \textbf{Recipe} boxes summarise a reusable procedure, and the
+\textbf{Common pitfall} boxes point out the mistakes that are easy to make in
+hybrid locomotion.
+
+\begin{center}
+\small
+\begin{tabular}{p{0.16\textwidth}p{0.39\textwidth}p{0.37\textwidth}}
+\toprule
+Part & What is done & What to look for \\
+\midrule
+Example 4.3 & Rimless wheel simulation, return map & collision loss vs.\
+gravity input; stable fixed point; critical slope \\
+Example 4.4 & Compass gait simulation & passive limit cycle; step-to-step
+map; narrow basin of attraction \\
+Example 4.5 & SLIP simulation & flight/stance phases; no collision loss;
+energy conservation \\
+Example 4.6 & SLIP apex-to-apex map & 1D map on an energy slice; stable and
+unstable fixed points; partial stability \\
+Section 4.6 & One-dimensional hopper & energy balance; preload at the bottom;
+reset at the apex; hopping-height tracking \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{intuition}[breakable=false,title={The big picture in five sentences}]
+Walking and running are \emph{periodic} motions, not motions to a fixed
+point.  The right object is therefore a \emph{limit cycle} and its
+\emph{step-to-step} (Poincar\'e) map.  A fixed point of that map is a periodic
+gait; the slope of the map at the fixed point decides whether the gait is
+stable.  Passive walkers get their energy from gravity on a slope and lose it
+at foot strike; running models such as SLIP have no impact loss but store
+energy in a spring.  In all cases, the low-dimensional map is the key to both
+understanding and control.
+\end{intuition}
+
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+Symbol & Meaning \\
+\midrule
+$\alpha$ & half-angle between adjacent spokes (rimless wheel) \\
+$\gamma$ & slope of the ramp \\
+$\omega=\dot\theta$ & angular velocity in the support phase \\
+$\omega^*$ & fixed point of the return map (periodic gait) \\
+$\theta_{st},\theta_{sw}$ & stance and swing leg angles (compass gait) \\
+$\theta_{td}$ & touchdown angle of the SLIP leg \\
+$z$ & apex height (SLIP) \\
+$P(z)$ & apex-to-apex return map \\
+$\bar\delta$ & hopping preload (Section 4.6) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
 %=====================================================================
 \section{Example 4.3: The Rimless Wheel}
 %=====================================================================
@@ -137,6 +210,50 @@ about the new contact point is conserved, while the collision is inelastic:
 \end{equation}
 The kinetic energy is multiplied by $\cos^2(2\alpha)$; for $\alpha=\pi/8$
 this is $1/2$, i.e.\ half of the kinetic energy is lost at every step.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.25]
+  \draw[thick] (-5.2,0.75)--(5.2,-0.45);
+  \coordinate (C) at (0,1.7);
+  \draw[thick] (C) circle (1.7);
+  \foreach \a in {-90,-45,0,45,90,135,180,225}
+    \draw[gray] (C)--++(\a:1.7);
+  \draw[ultra thick,red!70!black] (C)--++(-70:1.7);
+  \draw[ultra thick,orange!85!black] (C)--++(-25:1.7);
+  \fill (C) circle (3.4pt) node[above=3pt] {$m$};
+  \fill[red!70!black] (C)++(-70:1.7) circle (3.4pt);
+  \fill[orange!85!black] (C)++(-25:1.7) circle (3.4pt);
+  \draw[dashed,gray] (C)--++(0,-2.0);
+  \draw[->,thick] (C)++(-90:0.85) arc[start angle=-90,end angle=-70,radius=0.85];
+  \node at (-0.55,0.95) {$\theta$};
+  \draw[->,thick] (C)++(-70:0.55) arc[start angle=-70,end angle=-25,radius=0.55];
+  \node at (1.05,1.45) {$2\alpha$};
+  \draw[->,very thick,red] (C)--++(0,-0.85) node[right] {$mg$};
+  \node[red!70!black] at (0.75,-0.25) {support};
+  \node[orange!85!black] at (2.0,0.75) {next};
+  \draw[dashed,gray] (-4.7,0.75)--(0,0.75);
+  \draw[->] (-4.0,0.75) arc[start angle=0,end angle=-7,radius=1.0];
+  \node at (-3.4,0.58) {$\gamma$};
+\end{tikzpicture}
+\caption{Rimless-wheel schematic.  The wheel has $n=8$ spokes, so the angle
+between adjacent spokes is $2\alpha=\pi/4$.  The support spoke is the one
+currently on the ground; the next spoke is the one that will strike next.
+Gravity acts at the hub mass $m$.}
+\label{fig:rimless_wheel}
+\end{figure}
+
+\begin{intuition}[breakable=false,title={Why a wheel without a rim can keep walking}]
+At every step the collision keeps only $\cos^2(2\alpha)$ of the kinetic
+energy; for $\alpha=\pi/8$ this is one half.  Without gravity the wheel would
+stop.  On a slope, gravity does work during the support phase and adds
+$4(g/l)\sin\alpha\sin\gamma$ to the squared angular velocity.  A periodic
+gait is possible exactly when the gain and the loss balance.  The fixed point
+of the return map is that balance point, and its slope
+$\cos^2(2\alpha)=1/2$ is smaller than one, so the gait is stable.  On a
+shallow slope the fixed point lies below the step threshold and the wheel
+cannot reach the next spoke.
+\end{intuition}
 
 \subsection{Return map, fixed point and stability}
 
@@ -243,6 +360,49 @@ During stance the stance foot is pinned; during swing the swing leg moves
 freely; at heel strike an inelastic collision occurs and the roles of the two
 legs are swapped.  The textbook model walks downhill on a ramp of slope
 $\gamma=0.0525$ rad.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.25]
+  \draw[thick] (-3.4,0.3)--(3.4,-0.3);
+  \coordinate (H) at (0,2.3);
+  \coordinate (S) at (-1.1,0.1);
+  \coordinate (W) at (1.4,0.1);
+  \draw[ultra thick,blue!60!black] (H)--(S);
+  \draw[ultra thick,orange!85!black] (H)--(W);
+  \fill (H) circle (3.4pt) node[above=3pt] {hip $m_h$};
+  \fill (S) circle (3.4pt) node[below left=2pt] {stance foot};
+  \fill (W) circle (3.4pt) node[below right=2pt] {swing foot};
+  \fill[blue!60!black] ($(H)!0.5!(S)$) circle (2.6pt) node[left=3pt] {$m$};
+  \fill[orange!85!black] ($(H)!0.5!(W)$) circle (2.6pt) node[right=3pt] {$m$};
+  \draw[dashed,gray] (H)--++(0,-2.5);
+  \draw[->] (H)++(-90:0.80) arc[start angle=-90,end angle=-115,radius=0.80];
+  \node at (-0.85,1.15) {$\theta_{st}$};
+  \draw[->] (H)++(-90:1.05) arc[start angle=-90,end angle=-58,radius=1.05];
+  \node at (0.95,1.05) {$\theta_{sw}$};
+  \draw[->,thick,red] (H)--++(0,-1.6) node[right=2pt] {$g$};
+  \draw[dashed,gray] (-3.0,0.3)--(0,0.3);
+  \draw[->] (-2.4,0.3) arc[start angle=0,end angle=-5,radius=1.0];
+  \node at (-1.9,0.15) {$\gamma$};
+\end{tikzpicture}
+\caption{Compass-gait schematic.  The stance leg is pinned at the ground;
+the swing leg moves forward and becomes the next stance leg at heel strike.
+The hip is a passive hinge in the example (zero torque), and each leg carries
+a point mass $m$ at its center.}
+\label{fig:compass_gait}
+\end{figure}
+
+\begin{intuition}[breakable=false,title={Why passive walking is possible, and why it is fragile}]
+The compass gait has no motor.  Gravity pulls the body down the slope during
+stance; the heel strike dissipates energy.  A periodic gait exists when the
+two effects balance, just as for the rimless wheel.  The difference is that
+the compass gait has only two legs and a free-swinging swing leg: the landing
+geometry must match the previous step almost exactly.  This is why the basin
+of attraction is a narrow band and why the same initial condition that works
+on one slope can fail on another.  The step-to-step map is again the right
+tool: a periodic gait is a fixed point, and its Floquet multipliers decide
+whether a small perturbation decays.
+\end{intuition}
 
 \subsection{Results of the supplied notebook}
 
@@ -357,6 +517,53 @@ E=\frac12m\left(\dot r^2+r^2\dot\theta^2\right)
 is conserved: there is no impact loss because the leg and foot are massless.
 This is the key difference from the rimless wheel and compass gait.
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.15]
+  % flight
+  \draw[thick] (-3.2,0)--(0,0);
+  \coordinate (M) at (-1.5,1.6);
+  \coordinate (F) at (-0.8,0.45);
+  \draw[thick] (M)--(F);
+  \fill (M) circle (4pt) node[above] {$m$};
+  \fill (F) circle (2.2pt);
+  \draw[dashed,gray] (M)--++(0,-1.2);
+  \draw[->] (M)++(-90:0.55) arc[start angle=-90,end angle=-58,radius=0.55];
+  \node at ($(M)+(0.35,-0.25)$) {$\theta_{td}$};
+  \draw[->,blue,thick] (M)--++(1.15,0) node[right] {$\dot x$};
+  \node at (-1.6,-0.30) {flight};
+  \node at (-1.6,-0.60) {leg length $r_0$};
+  % stance
+  \draw[thick] (0.4,0)--(3.8,0);
+  \coordinate (M2) at (2.1,1.35);
+  \coordinate (F2) at (2.1,0);
+  \draw[thick] (M2)--(F2);
+  \draw[decoration={zigzag,segment length=4pt,amplitude=3pt},decorate]
+       (2.1,1.15)--(2.1,0.15);
+  \fill (M2) circle (4pt) node[above] {$m$};
+  \fill (F2) circle (2.2pt);
+  \node at (2.85,0.85) {$r<r_0$};
+  \node at (2.1,-0.30) {stance};
+  \node at (2.1,-0.60) {spring $k$};
+\end{tikzpicture}
+\caption{SLIP schematic.  In flight the leg is reset to the touchdown angle
+$\theta_{td}$; in stance the spring compresses ($r<r_0$), stores energy and
+extends again.  The leg and foot are massless, so there is no impulsive
+energy loss at touchdown.}
+\label{fig:slip}
+\end{figure}
+
+\begin{intuition}[breakable=false,title={Why SLIP is a ``conservative'' runner}]
+The leg and foot are massless, so the ground contact does not produce an
+impulse and the mechanical energy is conserved.  That is the main difference
+from the rimless wheel and the compass gait, which lose energy at every
+impact.  Running is therefore a segmented Hamiltonian motion: ballistic
+flight, then a spring-mass stance, then flight again.  The touchdown angle
+decides how much horizontal velocity is converted into compression.  Because
+the energy is constant, the apex-to-apex map can be reduced to one dimension
+on an energy slice, but that also limits what the map can prove.
+\end{intuition}
+
 \subsection{Results of the supplied notebook}
 
 The notebook starts from a flight state with touchdown angle
@@ -401,6 +608,51 @@ stability is determined by $P'(z^*)$ (stable if $|P'|<1$).
   $\tilde E=1.61$, varying touchdown angle.  Filled circles are stable fixed
   points, open circles are unstable ones.}
 \end{figure}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.05]
+  \draw[->] (0,0)--(6.4,0) node[right] {$z[n]$};
+  \draw[->] (0,0)--(0,6.0) node[above] {$z[n+1]$};
+  \draw[dashed,gray] (0,0)--(5.8,5.8);
+  \draw[thick,blue] plot[domain=0.5:5.4,samples=100]
+       (\x,{0.20*(\x-2.2)*(\x-3.8)+\x});
+  \fill (2.2,2.2) circle (3.4pt)
+       node[below right=2pt] {stable $z^\star$};
+  \fill[white,draw=black] (3.8,3.8) circle (3.4pt)
+       node[above left=2pt] {unstable $z_u$};
+  \draw[->,red] (1.1,1.1)--(1.55,1.55);
+  \draw[->,red] (2.9,2.9)--(2.45,2.45);
+  \draw[->,red] (4.4,4.4)--(4.8,4.8);
+\end{tikzpicture}
+\caption{Schematic of a one-dimensional apex map.  Intersections of the blue
+curve with the diagonal are periodic gaits.  A stable fixed point has
+$|P'(z^\star)|<1$ (nearby iterates move toward it); an unstable one has
+$|P'(z_u)|>1$.  The red arrows show the direction of the iteration.}
+\label{fig:apex_map}
+\end{figure}
+
+\begin{recipe}[breakable=false,title={How to build and read a Poincar\'e map}]
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+  \item Choose a section that the periodic orbit crosses once per cycle
+        (e.g.\ the apex for SLIP, or the heel strike for walking).
+  \item Simulate from many initial conditions on the section and record the
+        next crossing.  This defines the map $z[n+1]=P(z[n])$.
+  \item Find fixed points by solving $P(z)=z$; the slope $P'(z)$ at the fixed
+        point decides stability ($|P'|<1$).
+  \item Remember what the map projects away.  If it was obtained by using a
+        conserved quantity, as in SLIP, the stability is only partial.
+\end{enumerate}
+\end{recipe}
+
+\begin{pitfall}[breakable=false,title={A stable apex map is not full stability}]
+For SLIP the map is computed on a constant-energy slice: the horizontal
+velocity at the apex is reconstructed from $z$ and the total energy.  A
+perturbation that changes the energy, such as a step in the terrain or a push,
+is not represented by the one-dimensional map.  Thus $|P'|<1$ proves
+stability only within that slice.  This is why the notes call it
+\emph{partial} stability, and why a real robot still needs energy regulation.
+\end{pitfall}
 
 \subsection{Fixed points and sensitivity}
 
@@ -470,6 +722,40 @@ twice per cycle:
   \item at the bottom $t_{bt}$: set $\delta(t_{bt}^+)=\bar\delta$;
   \item at the apex $t_{ap}$: reset $\delta(t_{ap}^+)=0$.
 \end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.15]
+  \draw[thick] (-1.0,0)--(5.2,0);
+  \draw[fill=blue!10,draw=black] (1.5,2.4) rectangle (3.0,3.2);
+  \node at (2.25,2.8) {body $m_b$};
+  \coordinate (B) at (2.25,2.4);
+  \coordinate (F) at (2.25,0.0);
+  \draw[thick] (B)--(F);
+  \draw[decoration={zigzag,segment length=4pt,amplitude=3pt},decorate]
+       (2.25,2.25)--(2.25,0.25);
+  \fill (F) circle (3pt);
+  \node at (3.55,1.55) {leg $m_l$, spring $k$};
+  \node at (2.25,-0.28) {ground};
+  \draw[dashed,gray] (4.2,0)--(4.2,1.2);
+  \draw[<->] (4.2,0)--(4.2,1.2) node[midway,right] {$h$};
+  \draw[->,very thick,red] (1.05,3.05)--(0.35,3.05)
+       node[left] {preload $\delta$};
+  \node at (2.25,3.45) {flight or stance};
+\end{tikzpicture}
+\caption{One-dimensional hopper schematic.  The body and leg are connected
+by a spring; $\delta\ge0$ is the preload.  The controller changes $\delta$
+only at the bottom (apply $\bar\delta$) and at the apex (reset to zero).}
+\label{fig:hopper}
+\end{figure}
+
+\begin{intuition}[breakable=false,title={The controller in one sentence}]
+The collisions at touchdown and lift-off remove energy.  At the bottom of the
+stance phase we compress the spring by a preload $\bar\delta$; this injects
+exactly enough energy so that the next apex reaches the desired height $h$.
+At the apex we reset the preload to zero.  The whole controller is therefore
+a scalar energy calculation, updated twice per hop, not a trajectory tracker.
+\end{intuition}
 
 \subsection{Energy derivation of the preload}
 
