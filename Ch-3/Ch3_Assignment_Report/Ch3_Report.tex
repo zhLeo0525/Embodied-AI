@@ -16,6 +16,29 @@
 \usepackage{listings}
 \usepackage{microtype}
 \usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,angles,quotes}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+
+\newtcolorbox{intuition}[1][]{
+  enhanced,breakable,
+  colback=blue!4,colframe=blue!45!black,
+  title=Intuition,fonttitle=\bfseries,
+  left=4pt,right=4pt,top=4pt,bottom=4pt,
+  #1}
+\newtcolorbox{pitfall}[1][]{
+  enhanced,breakable,
+  colback=red!3,colframe=red!55!black,
+  title=Common pitfall,fonttitle=\bfseries,
+  left=4pt,right=4pt,top=4pt,bottom=4pt,
+  #1}
+\newtcolorbox{recipe}[1][]{
+  enhanced,breakable,
+  colback=green!3,colframe=green!45!black,
+  title=Recipe,fonttitle=\bfseries,
+  left=4pt,right=4pt,top=4pt,bottom=4pt,
+  #1}
 
 \hypersetup{
   colorlinks=true,
@@ -125,6 +148,63 @@ The examples are run with the commands listed in
 Section~\ref{sec:repro}.  All random studies use fixed seeds, so the tables
 are reproducible.
 
+\subsection*{How to read this report}
+
+The report contains three layers: (i) \emph{models and equations},
+(ii) \emph{numerical experiments}, and (iii) \emph{interpretation}.
+If a formula looks dense, read the \textbf{Intuition} boxes first: they give
+the physical picture without algebra.  The \textbf{Recipe} boxes summarise a
+procedure you can reuse, and the \textbf{Common pitfall} boxes point out
+mistakes that are easy to make.
+
+\begin{center}
+\small
+\begin{tabular}{p{0.17\textwidth}p{0.38\textwidth}p{0.37\textwidth}}
+\toprule
+Part & What is done & What to look for \\
+\midrule
+Example 3.1 & Acrobot dynamics, linearisation, LQR & underactuation is not
+the same as uncontrollability; weak directions; saturation \\
+Example 3.2 & Cart-pole dynamics, linearisation, LQR & zero eigenvalues from
+the cart; right-half-plane zero; slow cart mode \\
+Example 3.5 & LQR comparison of acrobot and cart-pole & condition number,
+non-minimum phase, basin of attraction, actuator limits \\
+Example 3.6 & Planar and 3D quadrotor LQR & linearisation at \emph{nonzero}
+thrust; $Q/R$ trade-off; wind offset \\
+Exercises 3.1--3.4 & Section 3.8 & linearisation error, URDF frames,
+reachability proof, stability table \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{intuition}[breakable=false,title={The big picture in five sentences}]
+All systems in this chapter are \emph{underactuated}: there are fewer
+actuators than degrees of freedom.  Linearisation replaces the nonlinear
+system by its tangent at an equilibrium; LQR stabilises that tangent, so the
+guarantee is \emph{local}.  Two effects limit the usable region: the system
+may be \emph{non-minimum phase} (it first moves the wrong way) and the
+actuator may saturate.  Controllability answers ``can we reach any state?'';
+it does not answer ``how hard is it?''.  The quadrotor is special only in that
+the linearisation is taken around a hover point with non-zero thrust.
+\end{intuition}
+
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+Symbol & Meaning \\
+\midrule
+$\x=[q,\dot q]^\top$ & state (positions and velocities) \\
+$\x^\star$ & equilibrium / operating point \\
+$A=\partial f/\partial\x$, $B=\partial f/\partial u$ & linearisation at $\x^\star$ \\
+$\C=[B,AB,\dots,A^{n-1}B]$ & controllability matrix \\
+$Q\succeq0$, $R\succ0$ & LQR state and input weights \\
+$K$ or $D$ & state-feedback gain ($u=-K(\x-\x^\star)$ or $u=D(\x-\x^\star)$) \\
+RHP zero & right-half-plane zero (non-minimum phase) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
 %=====================================================================
 \section{Example 3.1: Dynamics of the Acrobot}
 %=====================================================================
@@ -146,6 +226,49 @@ The upright equilibrium is $\x^\star=[\pi,0,0,0]^\top$.  The default Drake
 parameters are $m_1=m_2=1$ kg, $l_1=1$ m, $l_2=2$ m, $l_{c1}=0.5$ m,
 $l_{c2}=1$ m, $I_{c1}=0.083$ kg\,m$^2$, $I_{c2}=0.33$ kg\,m$^2$ and
 $b_1=b_2=0.1$.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.35]
+  \coordinate (O) at (0,0);
+  \coordinate (E) at (1.8,1.5);
+  \coordinate (H) at (3.3,1.0);
+  \draw[very thick,blue!60!black] (O)--(E);
+  \draw[very thick,blue!60!black] (E)--(H);
+  \fill (O) circle (3.2pt) node[left=6pt,align=right] {shoulder\\(passive)};
+  \fill (E) circle (3.2pt) node[above left=3pt] {elbow};
+  \fill (H) circle (3.2pt) node[right=4pt] {tip};
+  \draw[dashed,gray] (O)--(0,-1.6);
+  \draw[->,gray] (0,-1.95)--(0,-1.6);
+  \node[gray] at (0,-1.8) {gravity};
+  \draw[->,thick] (0,-0.9) arc[start angle=-90,end angle=40,radius=0.9];
+  \node at (0.45,0.15) {$\theta_1$};
+  \draw[dashed,gray] (E)--++(1.1,0.92);
+  \draw[->,thick] (E) ++(40:0.55) arc[start angle=40,end angle=-17,radius=0.55];
+  \node at (2.95,2.15) {$\theta_2$};
+  \draw[->,very thick,orange!80!black] (E) ++(-0.32,-0.22)
+       arc[start angle=200,end angle=340,radius=0.38];
+  \node[orange!80!black] at (1.95,0.72) {$u=\tau$};
+  \node[blue!60!black] at (0.55,0.45) {link 1};
+  \node[blue!60!black] at (2.90,1.20) {link 2};
+\end{tikzpicture}
+\caption{Acrobot schematic.  The shoulder is not actuated; the only input is
+the elbow torque $u=\tau$.  $\theta_1$ is measured from the downward vertical
+and $\theta_2$ from the extension of link~1.  Because the shoulder has no
+motor, the only way to move $\theta_1$ is through the inertial coupling
+produced by the elbow motion.}
+\label{fig:acrobot}
+\end{figure}
+
+\begin{intuition}[breakable=false,title={Why can a one-motor two-link robot still be controllable?}]
+Imagine holding a chain by one end and moving it with your wrist.  The far
+end is not directly actuated, but it moves because the links are coupled by
+their mass and inertia.  The acrobot works the same way: the elbow torque
+accelerates link~2, and the reaction on link~1 changes $\theta_1$.  This is
+why the linearised pair $(A,B)$ can have rank~4 even though the shoulder has
+no motor.  The coupling is not equally strong in all directions, however;
+that is the meaning of ``weak controllability'' below.
+\end{intuition}
 
 \subsection{What was run}
 
@@ -313,6 +436,41 @@ unstable poles, so the gain cannot go to zero for an unstable system.
 
 \subsection{Model and linearisation}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.0]
+  \draw[thick] (-2.6,0)--(2.6,0);
+  \draw[fill=green!25,draw=black] (-0.65,0) rectangle (0.65,0.45);
+  \fill[black] (-0.38,-0.09) circle (0.10);
+  \fill[black] (0.38,-0.09) circle (0.10);
+  \coordinate (P) at (0,0.45);
+  \coordinate (T) at (1.15,2.30);
+  \draw[very thick,red!70!black] (P)--(T);
+  \fill[red!70!black] (T) circle (3.5pt) node[right=3pt] {$m_p$};
+  \draw[dashed,gray] (P)--(0,2.55);
+  \draw[->,thick] (0,1.45) arc[start angle=90,end angle=65,radius=1.45];
+  \node at (0.25,1.60) {$\theta$};
+  \draw[->,very thick,blue] (0.65,0.22)--(1.75,0.22) node[right] {$u=F_x$};
+  \draw[->] (-1.9,0.65)--(-1.9,1.35) node[above] {$z$};
+  \draw[->] (-1.9,0.65)--(-1.2,0.65) node[above] {$x$};
+  \node at (-0.55,0.22) {$m_c$};
+  \node at (-2.4,0.18) {track};
+\end{tikzpicture}
+\caption{Cart-pole schematic.  The cart of mass $m_c$ slides along $x$; the
+pole of mass $m_p$ is attached by a passive hinge.  The only input is the
+horizontal force $u=F_x$.  $\theta$ is measured from the upward vertical
+($\theta=\pi$ is upright in the model used in this report).}
+\label{fig:cartpole}
+\end{figure}
+
+\begin{intuition}[title={What the state and the input mean}]
+$x$ is where the cart is, $\theta$ is how far the pole is from upright,
+$\dot x$ and $\dot\theta$ are their velocities, and $u$ is the only force we
+can apply.  There is no motor at the pole hinge, so the pole angle can only be
+changed by moving the cart.  This is the whole difficulty of the cart-pole:
+we must use one actuator to control two coordinates.
+\end{intuition}
+
 The cart-pole has state $\x=[x,\theta,\dot x,\dot\theta]^\top$ and input
 $u=F_x$.  The model used by the notebook
 (\texttt{underactuated/models/cartpole.urdf}) has $m_c=10$ kg, $m_p=1$ kg,
@@ -342,6 +500,18 @@ The transfer function from $u$ to $x$ has a right-half-plane zero at
 $+4.43$: the cart must first move in the opposite direction to bring the pole
 back.  This non-minimum-phase behaviour is visible as a cart undershoot of
 about 0.3 m for a 0.1 disturbance.
+
+\begin{pitfall}[title={What a right-half-plane zero really means}]
+A zero at $+4.43$ does not mean that the system is unstable.  It means that
+the cart's response to a force starts in the \emph{opposite} direction.
+Physically: to bring the pole back to the left, the cart first accelerates to
+the right so that the pole starts falling left; then the cart reverses to
+catch it.  The net initial displacement is therefore opposite to the final
+one.  This ``undershoot'' is not a controller bug: state feedback cannot move
+a zero, so LQR keeps it.  It also explains why the cart moves about 0.3 m in
+the wrong direction for a 0.1 disturbance, and why aggressive saturation can
+destroy the recovery.
+\end{pitfall}
 
 \subsection{LQR results and sensitivity}
 
@@ -432,6 +602,42 @@ $\Q\succeq0$, $\R\succ0$.  The closed-loop eigenvalues determine local
 exponential stability of the nonlinear system; they say nothing about the
 size of the basin of attraction or about input saturation.
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,node distance=1.5cm,
+  box/.style={draw,rounded corners,align=center,fill=blue!5,
+              minimum width=3.1cm,minimum height=1.05cm}]
+  \node[box] (design) {$(A,B,Q,R)$\\ solve the Riccati equation};
+  \node[box,below=1.3cm of design] (ctrl) {state feedback\\ $u=-K(\x-\x^\star)$};
+  \node[box,right=1.6cm of ctrl] (plant) {nonlinear plant\\ $\dot\x=f(\x,u)$};
+  \node[circle,draw,left=1.3cm of ctrl] (sum) {$+$};
+  \node[left=0.8cm of sum] (ref) {$\x^\star$};
+  \draw[->] (ref)--(sum);
+  \draw[->] (sum)--(ctrl);
+  \draw[->] (ctrl)--(plant);
+  \draw[->] (plant.east)--++(0.9,0) node[above] {$\x$};
+  \draw[->] (plant.east)++(0.9,0)--++(0,-1.7)-|(sum.south);
+  \draw[->,dashed] (design)--(ctrl) node[midway,right] {$K$};
+\end{tikzpicture}
+\caption{LQR at a glance.  The design block solves the algebraic Riccati
+equation once, offline.  The online controller is just a linear state
+feedback, so it is cheap to run.  The nonlinear simulation is what tells us
+how far from $\x^\star$ the linear guarantee remains useful.}
+\label{fig:lqr_block}
+\end{figure}
+
+\begin{intuition}[title={Reading $Q$ and $R$}]
+Think of the cost as a negotiation between two goals.  $Q$ says ``keep the
+state close to the equilibrium''; $R$ says ``do not use too much actuator
+effort''.  Increasing $Q$ (or decreasing $R$) makes the controller more
+aggressive: it corrects faster but uses larger inputs.  Increasing $R$ makes
+it gentler: smaller inputs, slower response, and often a larger steady-state
+error under a disturbance.  The Riccati equation finds the best compromise
+for the \emph{linear} model; it knows nothing about saturation, friction or
+the size of the nonlinear basin.  That is why the simulations in this report
+are essential.
+\end{intuition}
+
 \subsection{Comparison of the two systems}
 
 \begin{table}[htbp]
@@ -519,6 +725,29 @@ and a longer time for the cart to return.
 \section{Example 3.6: LQR for Quadrotors}
 %=====================================================================
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.1]
+  \draw[very thick,black!70] (-1.5,0)--(1.5,0);
+  \fill[black!70] (-1.35,0) circle (0.10);
+  \fill[black!70] (1.35,0) circle (0.10);
+  \draw[thick] (0,0)--(0,-0.55);
+  \fill (0,-0.55) circle (2.5pt) node[below] {$m$};
+  \draw[->,very thick,blue] (-1.35,0.10)--(-1.35,0.95) node[above] {$u_1$};
+  \draw[->,very thick,blue] (1.35,0.10)--(1.35,0.95) node[above] {$u_2$};
+  \draw[->,thick,red!70!black] (0,-0.55)--(0,-1.35) node[right] {$mg$};
+  \draw[dashed,gray] (-2.2,0)--(2.2,0);
+  \draw[->,thick] (-1.0,0) arc[start angle=180,end angle=160,radius=1.0];
+  \node at (-1.35,0.32) {$\theta$};
+  \draw[->] (1.9,-0.2)--(2.6,-0.2) node[right] {$x$};
+  \draw[->] (1.9,-0.2)--(1.9,0.5) node[above] {$z$};
+\end{tikzpicture}
+\caption{Planar quadrotor schematic.  The two propeller thrusts are the only
+inputs.  At hover, $u_1+u_2=mg$ and $\theta=0$.  The vehicle can translate by
+tilting and then using the horizontal component of the total thrust.}
+\label{fig:planar_quad}
+\end{figure}
+
 \subsection{Planar quadrotor}
 
 The planar quadrotor has state
@@ -542,6 +771,18 @@ was run and the quantitative studies below were produced by
 \qquad
 \R=\begin{bmatrix}0.1&0.05\\0.05&0.1\end{bmatrix}.
 \end{equation}
+
+\begin{intuition}[breakable=false,title={Why LQR ``works out of the box'' for a quadrotor}]
+The 3D quadrotor has four propeller inputs but six degrees of freedom, so it
+is underactuated: it cannot independently command position and attitude at
+the same instant.  Nevertheless, the hover equilibrium is \emph{stabilisable}.
+The linearisation is taken around a point where the total thrust balances
+gravity ($u_i=mg/4$), not around zero thrust; this is the key detail.  The
+LQR then coordinates the four thrusts to correct roll/pitch, which produces
+horizontal acceleration, and finally brings the vehicle back to the hover
+position.  There is no integral action, so a constant wind causes a
+steady-state position offset; this is visible in the sensitivity study.
+\end{intuition}
 
 \paragraph{Baseline.}  The resulting LQR has closed-loop poles
 \begin{equation}
@@ -664,6 +905,40 @@ At the upright equilibrium $\x^\star=[0,\pi,0,0]^\top$,
 \B_{\mathrm{lin}}=\begin{bmatrix}0\\0\\1\\1\end{bmatrix}.
 \end{equation}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.05]
+  \draw[->] (0,0)--(6.4,0) node[right] {state};
+  \draw[->] (0,0)--(0,4.1) node[above] {nonlinear field};
+  \draw[thick,blue] plot[domain=1.8:5.6,samples=100]
+       (\x,{0.06*(\x-3.2)^3+0.55*(\x-3.2)+1.4});
+  \draw[dashed,red,thick] plot[domain=1.9:4.8]
+       (\x,{0.55*(\x-3.2)+1.4});
+  \fill[green!25,opacity=0.55] (2.5,0) rectangle (3.9,4.1);
+  \node at (3.2,-0.28) {$\x^\star$};
+  \node[green!35!black,align=center] at (3.2,3.75)
+       {linear model\\accurate here};
+  \node[red] at (4.35,1.55) {tangent = linear model};
+  \node[blue] at (0.55,2.25) {true nonlinear field};
+\end{tikzpicture}
+\caption{Why linearisation is local.  The red dashed line is the tangent
+(linear model) at $\x^\star$; the blue curve is the true nonlinear field.
+They agree near $\x^\star$ (green band) and diverge farther away.  The six
+test points in the table below sample different distances from the
+equilibrium.}
+\label{fig:linearization_local}
+\end{figure}
+
+\begin{pitfall}[breakable=false,title={Do not use a linear controller everywhere}]
+A linear controller is designed for the tangent at one point.  If the state
+is far from that point, the real dynamics can differ so much that the
+controller no longer helps.  In this exercise the controller works from
+$\theta=0.99\pi$, $0.90\pi$ and $0.85\pi$, but fails from $\theta=\pi/2$ and
+from the downward equilibrium $\theta=0$.  The failure is not numerical: the
+linear model is simply the wrong model there.  This is also why a real
+cart-pole needs a swing-up controller before the LQR can take over.
+\end{pitfall}
+
 \subsection{Linearisation error}
 
 \begin{table}[htbp]
@@ -757,6 +1032,37 @@ The unstable equilibrium is
 \begin{equation}
 \x^\star=[0,\pi,\pi,0,0,0]^\top.
 \end{equation}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{double_pendulum_geometry.png}
+\caption{Geometry of the double pendulum (textbook figure).  Left: general
+configuration, with $\theta_0$ measured from the downward vertical and
+$\theta_1$ measured relative to the first pendulum.  Right: the home
+configuration $\theta_0=\theta_1=0$.  The second pendulum points back towards
+the cart and overlaps the first; this is exactly what the notebook asks you
+to observe.}
+\label{fig:double_geom}
+\end{figure}
+
+\begin{recipe}[title={Reading URDF frames (the part that is easy to get wrong)}]
+A URDF is a chain of \emph{frames}, not a chain of absolute coordinates.
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+  \item The \texttt{<origin>} of a joint is written in the \emph{parent link}
+        frame.  Here \texttt{theta1} has origin $(0,0,-1)$ in
+        \texttt{pendulum0}, so the joint sits at the ball of pendulum~0.
+  \item The child link frame is the joint frame.  Therefore the inertial and
+        visual origins of \texttt{pendulum1} are written in the
+        \texttt{pendulum1} frame, i.e.\ relative to that joint.
+  \item In the home configuration $\theta_1=0$, the child frame is not
+        rotated.  Putting the ball at $z=+1$ in this frame makes it go from
+        the joint at $z=-1$ back up to $z=0$: the two rods overlap.
+  \item At $\theta_0=\theta_1=\pi$, pendulum~0 points up (ball at $z=+1$);
+        the second joint is at that ball, and $\theta_1=\pi$ turns the second
+        rod so its ball is at $z=+2$.  Both links stand upright, one above the
+        other.
+\end{enumerate}
+\end{recipe}
 
 \begin{lstlisting}[language=XML,caption={Key part of the double-pendulum URDF.}]
 <link name="pendulum1">
@@ -861,6 +1167,39 @@ s_{i,j}\longmapsto (i+j,\;j+u).
   as dashed circles.  For $u=0$ the three bottom nodes have self-loops.}
 \end{figure}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.0,
+  node/.style={circle,draw,minimum size=1.0cm,inner sep=1pt}]
+  \node[node] (a) at (0,0) {$s_{0,0}$};
+  \node[node] (b) at (0,2.0) {$s_{0,i}$};
+  \node[node] (c) at (3.0,3.1) {$s_{i,j}$};
+  \draw[->,very thick,blue] (a)--(b) node[midway,left] {$u_0=i$};
+  \draw[->,very thick,blue] (b)--(c) node[midway,above] {$u_1=j-i$};
+  \draw[gray,dashed] (-1,0)--(4,0);
+  \draw[gray,dashed] (-1,2)--(4,2);
+  \draw[gray,dashed] (0,-1)--(0,4);
+  \draw[gray,dashed] (3,-1)--(3,4);
+\end{tikzpicture}
+\caption{Two-step construction from $s_{0,0}$ to $s_{i,j}$.  The first step
+only changes $x_2$ (we move vertically in the grid); the second step uses
+that $x_2$ to move $x_1$ (diagonally).  One step cannot reach $i>0$ because
+$x_1[1]=0$ regardless of $u_0$.}
+\label{fig:two_step}
+\end{figure}
+
+\begin{recipe}[title={How to think about the discrete map}]
+Write the state after $N$ steps by unrolling the recurrence:
+\[
+x_1[N]=\sum_{k=0}^{N-2}(N-1-k)u_k,\qquad
+x_2[N]=\sum_{k=0}^{N-1}u_k .
+\]
+For $N=1$ the first sum is empty, so $x_1$ cannot change; for $N=2$ we have
+two control variables and two equations, which is exactly enough to hit any
+integer pair.  This is a controllability statement in disguise: the number of
+independent controls (2) matches the number of states (2).
+\end{recipe}
+
 \paragraph{Minimal number of steps from $s_{0,0}$.}
 After one step the state is $(0,u_0)$, so $x_1=0$ and no $s_{i,j}$ with $i>0$
 is reachable.  After two steps the state is $(u_0,u_0+u_1)$; choosing
@@ -911,6 +1250,43 @@ orthogonal to the left eigenvector $[1,-1]^\top$.  For $(\A_4,\B_4)$, the
 eigenvalues are $0,0,\pm\sqrt2$ and the PBH test
 $\operatorname{rank}[\A_4-\lambda I,\B_4]=4$ holds for each eigenvalue.
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1.1]
+  \draw[->] (-2.6,0)--(2.6,0) node[right] {$x_1$};
+  \draw[->] (0,-2.6)--(0,2.6) node[above] {$x_2$};
+  \draw[->,very thick,blue] (0,0)--(1.6,1.6) node[above right] {$\B$};
+  \draw[->,very thick,blue!50] (0,0)--(-1.6,-1.6) node[below left] {$\A\B$};
+  \draw[dashed,red,thick] (-2.2,2.2)--(2.2,-2.2);
+  \node[red] at (-1.8,2.45) {$[1,-1]^\top$};
+  \node[blue] at (1.5,2.2) {reachable subspace};
+  \node[red,align=center] at (1.35,-2.55) {uncontrollable\\direction};
+\end{tikzpicture}
+\caption{Geometry of the $(A_2,B_2)$ example.  Both $B_2=[1,1]^\top$ and
+$A_2B_2=B_2$ point along the diagonal, so only the diagonal is reachable.
+The orthogonal direction $[1,-1]^\top$ is never affected by the input.  This
+is why the controllability matrix has rank~1 even though the state space is
+two-dimensional.}
+\label{fig:controllability}
+\end{figure}
+
+\begin{recipe}[title={Testing controllability without guessing}]
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+  \item Build $\C=[\B,\A\B,\dots,\A^{n-1}\B]$ and compute its rank.  Full rank
+        means every state is reachable.
+  \item If the rank is deficient, the left null space of $\C$ gives the
+        unreachable directions (equivalently, use the PBH test
+        $\operatorname{rank}[\A-\lambda I,\B]=n$ at each eigenvalue).
+  \item Rank is binary; the singular values tell you how \emph{hard} each
+        direction is to drive.  A full-rank system can still be very weakly
+        controllable.
+  \item Underactuation is a different question: compare the number of inputs
+        with the number of degrees of freedom when the system is written as
+        $\x=[q,\dot q]^\top$.  A system can be controllable and
+        underactuated at the same time.
+\end{enumerate}
+\end{recipe}
+
 \paragraph{Underactuation.}
 $(\A_3,\B_3)$ has $x=[q,\dot q]^\top$ with a scalar $q$ and one input acting
 directly on $\ddot q$: it is fully actuated.  $(\A_4,\B_4)$ has
@@ -956,6 +1332,58 @@ $b=1$, $\theta^\star=\pi$ & $2.6718,-3.6718$ & $+,-$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,node distance=0.9cm,
+  box/.style={draw,rounded corners,align=center,fill=blue!4,
+              minimum width=3.4cm,minimum height=0.9cm}]
+  \node[box] (eig) {eigenvalues of $A(\x^\star)$};
+  \node[box,below=of eig] (neg) {all $\operatorname{Re}\lambda<0$?};
+  \node[box,below=of neg] (pos) {any $\operatorname{Re}\lambda>0$?};
+  \node[box,right=1.4cm of neg] (stable) {local exponential\\stability};
+  \node[box,right=1.4cm of pos] (unstable) {instability};
+  \node[box,below=of pos] (inc) {inconclusive: analyse\\the nonlinear system};
+  \draw[->] (eig)--(neg);
+  \draw[->] (neg)--node[above] {yes}(stable);
+  \draw[->] (neg)--node[right] {no}(pos);
+  \draw[->] (pos)--node[above] {yes}(unstable);
+  \draw[->] (pos)--node[right] {no}(inc);
+\end{tikzpicture}
+\caption{Decision diagram for the linearisation test.  The first two branches
+are the standard Lyapunov indirect theorem.  The third branch
+($\operatorname{Re}\lambda=0$) is the dangerous one: the linearisation alone
+cannot decide, and one must go back to the nonlinear system.}
+\label{fig:stability_flow}
+\end{figure}
+
+\begin{intuition}[title={The three stability words in plain language}]
+\begin{itemize}[leftmargin=1.2em,itemsep=1pt]
+  \item \textbf{Stable i.s.L.} (in the sense of Lyapunov): if you start close
+        enough, you stay close.  You may oscillate forever.
+  \item \textbf{Asymptotically stable}: you stay close \emph{and} you
+        eventually converge to the equilibrium.
+  \item \textbf{Exponentially stable}: you converge at least as fast as
+        $e^{-ct}$ for some $c>0$.
+\end{itemize}
+For the undamped pendulum at the bottom, the energy is conserved: the
+trajectory is a closed orbit.  It is stable i.s.L.\ but not asymptotically
+stable, so it is certainly not exponentially stable.  For the damped
+pendulum, the energy decreases and the trajectory spirals into the bottom:
+all three properties hold (locally).  For the upright pendulum, a small
+perturbation makes the pendulum fall: the equilibrium is a saddle and is
+unstable.
+\end{intuition}
+
+\begin{pitfall}[title={Why $\operatorname{Re}\lambda=0$ needs care}]
+At the undamped bottom, the eigenvalues are $\pm3.13j$: the real parts are
+zero.  The linearised system is a centre, but the linearisation theorem is
+inconclusive.  In this particular case the nonlinear system is also stable,
+but that is a conclusion from the energy function, not from the eigenvalues.
+A different nonlinear term with the same linearisation could be unstable.
+This is why the exercise asks you to draw the phase portrait and to use the
+nonlinear energy, not only the Jacobian.
+\end{pitfall}
 
 \subsection{Stability table}
 
