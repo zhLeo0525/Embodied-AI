@@ -1,5 +1,8 @@
 # Chapter 3 · Section 3.8 作业解答
 
+> **查看提示**：如果 Markdown 预览不显示图片，请打开同目录下的 `Ch3_Section3.8_作业解答_preview.html`；图片已内嵌，公式由 MathJax 渲染。
+
+
 **课题：Acrobots, Cart-Poles, and Quadrotors — Section 3.8 Exercises**
 
 > 对应教材：[Ch. 3 Acrobots, Cart-Poles, and Quadrotors](https://underactuated.csail.mit.edu/acrobot.html#section8)，Section 3.8 共 4 道题：
@@ -50,7 +53,7 @@ Autograder 结果：
 
 # Exercise 3.1 — Cart-Pole: Linearization and Balancing
 
-![Cart-Pole 示意图](../md_figures/cartpole_schematic.png)
+![Cart-Pole 示意图](notes_figures/cartpole_schematic.png)
 
 *图：Cart-Pole。小车只有一个水平推力 $u=F_x$，却要同时控制小车位置 $x$ 和摆杆角度 $\theta$ 两个自由度；这是本章最典型的欠驱动例子。摆动杆的动力学只能通过小车加速度耦合过来。*
 
@@ -118,7 +121,7 @@ def get_B_lin():
 开环特征值为 $\pm\sqrt{2g}=\pm4.4294$ 和两个 $0$；一对不稳定实极点说明必须反馈镇定，
 两个零极点对应小车位置这一"积分链"。
 
-![线性化局部有效性示意图](../md_figures/linearization_local.png)
+![线性化局部有效性示意图](notes_figures/linearization_local.png)
 
 *图：为什么线性化只是局部的。红色虚线是 $x^\star$ 处的切线（线性模型），蓝色曲线是真实的非线性场；两者只在绿色带内接近，离平衡点越远差别越大。*
 
@@ -244,7 +247,7 @@ x_star_single_pendulum = [0, np.pi, 0, 0]
 
 ### 2.3 双摆 cart-pole：关键的坐标系推理
 
-![双摆几何与坐标系](../md_figures/double_pendulum_geometry.png)
+![双摆几何与坐标系](notes_figures/double_pendulum_geometry.png)
 
 *图：双摆几何（教材原图）。左图是一般位形；右图是 $\theta_0=\theta_1=0$。注意右图两根杆完全重合：第二摆的球在它自己的 link 坐标系中位于 $z=+1$，而关节在 $z=-1$，所以从关节向上回到 $z=0$。这正是 URDF 中“joint origin 在父系、child 的 inertial/visual 在关节系”的直观含义。*
 
@@ -297,7 +300,7 @@ x_star_double_pendulum = [0, np.pi, np.pi, 0, 0, 0]
 这个选择不是任意的：若把第二摆的小球也放在 $-1$，$\theta=(\pi,\pi)$ 对应的构型
 并不是"两摆都朝上"；autograder 对动力学的数值检查（12 分）也验证了 $+1$ 是正确的。
 
-![LQR 框图](../md_figures/lqr_block.png)
+![LQR 框图](notes_figures/lqr_block.png)
 
 *图：LQR 的两个阶段。离线解 Riccati 方程得到 $K$；在线只是 $u=-K(x-x^\star)$ 的一次矩阵乘法。$Q$ 惩罚状态误差，$R$ 惩罚控制量。*
 
@@ -416,7 +419,7 @@ $$
   $s_{2,2}\mapsto s_{4,3}$；
 - $u=0$ 时底排 $s_{0,0},s_{1,0},s_{2,0}$ 映到自身，图中画成自环。
 
-![离散双积分器两步路径](../md_figures/two_step_path.png)
+![离散双积分器两步路径](notes_figures/two_step_path.png)
 
 *图：从 $s_{0,0}$ 到 $s_{i,j}$ 的两步构造。第一步只改变 $x_2$（竖直方向），第二步用 $x_2$ 把 $x_1$ 推到位（斜向）。因此 $u_0=i,\ u_1=j-i$，最少 2 步；1 步时 $x_1$ 仍为 0。*
 
@@ -512,7 +515,7 @@ def controllability_matrix(A, B):
 rank = np.linalg.matrix_rank(controllability_matrix(A, B))
 ```
 
-![可控性几何示意](../md_figures/controllability_geometry.png)
+![可控性几何示意](notes_figures/controllability_geometry.png)
 
 *图：$(A_2,B_2)$ 的可控性几何。$B_2=[1,1]^\top$ 与 $A_2B_2=B_2$ 同向，所以输入只能沿对角线驱动；正交方向 $[1,-1]^\top$ 永远不受影响，这就是可控性矩阵秩为 1 的几何原因。*
 
@@ -543,7 +546,7 @@ rank = np.linalg.matrix_rank(controllability_matrix(A, B))
 ### (b.2) $(A_3,B_3)$ 与 $(A_4,B_4)$ 是否欠驱动？
 
 欠驱动的定义要求把系统解释为二阶系统
-$\mathbf{x}=[\mathbf{q},\dot\mathbf{q}]^\top$，比较自由度数与执行器数：
+$\mathbf{x}=[\mathbf{q},\dot{\mathbf{q}}]^\top$，比较自由度数与执行器数：
 
 - **$(A_3,B_3)$**：$\mathbf{q}=q\in\mathbb R$，1 个自由度；$B_3$ 直接作用于 $\ddot q$，
   1 个执行器，$\Rightarrow$ **全驱动 (fully actuated)**。
@@ -628,7 +631,7 @@ def jacobian(b, theta_star):
 - $b=1$：阻尼只改变特征值大小（$2.67,-3.67$），仍有一个正实部；相图仍是鞍点型，
   只是轨迹更快离开。**阻尼不能镇定倒立摆**（需要反馈，而不是被动阻尼）。
 
-![线性化稳定性判定流程](../md_figures/stability_flow.png)
+![线性化稳定性判定流程](notes_figures/stability_flow.png)
 
 *图：线性化稳定性的判定流程。特征值实部全负 → 局部指数稳定；存在正实部 → 不稳定；实部全为零 → 线性化无法判断，必须回到非线性分析（例如能量函数或相图）。*
 

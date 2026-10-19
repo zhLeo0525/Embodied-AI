@@ -9,7 +9,6 @@ import re
 import shutil
 import subprocess
 
-import fitz
 
 TEX = "Ch3_Assignment_Report/Ch3_Report.tex"
 OUT = "md_figures"
@@ -61,10 +60,11 @@ for name, marker in markers.items():
         cwd=OUT, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
     pdf_path = os.path.join(OUT, name + ".pdf")
-    doc = fitz.open(pdf_path)
-    pix = doc[0].get_pixmap(dpi=300)
-    pix.save(os.path.join(OUT, name + ".png"))
-    doc.close()
+    subprocess.run(
+        ["pdftocairo", "-png", "-singlefile", "-r", "300",
+         pdf_path, os.path.join(OUT, name)],
+        check=True,
+    )
     print("rendered", name)
 
 # The double-pendulum geometry is a raster figure from the textbook.

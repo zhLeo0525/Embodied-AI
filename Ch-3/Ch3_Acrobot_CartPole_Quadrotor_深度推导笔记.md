@@ -1,5 +1,8 @@
 # 第 3 章 Acrobot、Cart-Pole 与 Quadrotor —— 深度推导笔记
 
+> **查看提示**：如果 Markdown 预览不显示图片，请打开同目录下的 `Ch3_Acrobot_CartPole_Quadrotor_深度推导笔记_preview.html`；图片已内嵌，公式由 MathJax 渲染。
+
+
 > **来源**：Russ Tedrake, *Underactuated Robotics*, Ch. 3（underactuated.csail.mit.edu/acrobot.html，2024/2026 版）。
 > 公式编号 `(n)` 沿用原书；`[笔记]` 标记的是原书省略、本笔记补全的推导。
 > 所有数值结果均由附录 A 的脚本验证。
@@ -95,7 +98,7 @@ $$
 
 > **注意**：原书只说 "moments of inertia taken about the pivots"。对第二杆，pivot 是**肘**，所以 $I_2$ 已包含 $m_2l_{c2}^2$。若你的建模工具给的是绕质心的 $I_{cm2}$，必须用平行轴定理换成 $I_2=I_{cm2}+m_2l_{c2}^2$，否则推导出多出一项 $m_2l_{c2}^2$。
 
-![Acrobot 示意图](md_figures/acrobot_schematic.png)
+![Acrobot 示意图](notes_figures/acrobot_schematic.png)
 
 *图：Acrobot 的坐标与输入。肩关节没有电机，肘关节力矩 $u=\tau$ 是唯一输入；$\theta_1$ 从竖直向下量起，$\theta_2$ 相对第一杆的延长线。两杆通过惯性耦合，所以“少一个电机”不等于“不可控”。*
 
@@ -362,7 +365,7 @@ $$
 U=-m_pgl\cos\theta. \tag{13}
 $$
 
-![Cart-Pole 示意图](md_figures/cartpole_schematic.png)
+![Cart-Pole 示意图](notes_figures/cartpole_schematic.png)
 
 *图：Cart-Pole。小车只有一个水平推力 $u=F_x$，却要同时控制小车位置 $x$ 和摆杆角度 $\theta$ 两个自由度；这是本章最典型的欠驱动例子。摆动杆的动力学只能通过小车加速度耦合过来。*
 
@@ -510,7 +513,7 @@ $$
 
 **$B$ 依赖构型**——这正是四旋翼与其他两个模型的关键区别，也直接导致线性化中 $\partial B/\partial q$ 项不可忽略（见 3.3.3）。
 
-![平面四旋翼示意图](md_figures/planar_quadrotor.png)
+![平面四旋翼示意图](notes_figures/planar_quadrotor.png)
 
 *图：平面四旋翼。两个推力先合成总推力，再通过倾角 $\theta$ 产生水平分力；悬停时 $u_1+u_2=mg$、$\theta=0$。线性化是在“非零推力”的悬停点做的，不是在零推力处。*
 
@@ -608,8 +611,8 @@ $$
 
 $$
 \dot x\approx \underbrace{f(x^*,u^*)}_{=0}
-+\left.\frac{\partial f}{\partial x}\right_* (x-x^*)
-+\left.\frac{\partial f}{\partial u}\right_* (u-u^*).
++\left.\frac{\partial f}{\partial x}\right|_{\star} (x-x^*)
++\left.\frac{\partial f}{\partial u}\right|_{\star} (u-u^*).
 $$
 
 逐块计算。
@@ -666,7 +669,7 @@ $$
 2. 所有含 $C\dot q$ 的导数项因 $\dot q^*=0$ 消失（零速度时科氏/离心力为零）；
 3. Acrobot、Cart-Pole 的 $B$ 是常数矩阵，$\partial B/\partial q$ 项也没了。**四旋翼不满足第 3 条**，见 3.3.3。
 
-![线性化局部有效性示意图](md_figures/linearization_local.png)
+![线性化局部有效性示意图](notes_figures/linearization_local.png)
 
 *图：为什么线性化只是局部的。红色虚线是 $x^\star$ 处的切线（线性模型），蓝色曲线是真实的非线性场；两者只在绿色带内接近，离平衡点越远差别越大。*
 
@@ -786,7 +789,7 @@ $$
 
 第三行是常考点：临界稳定时，非线性项决定命运，可能是渐近稳定、Lyapunov 稳定、也可能不稳定。
 
-![线性化稳定性判定流程](md_figures/stability_flow.png)
+![线性化稳定性判定流程](notes_figures/stability_flow.png)
 
 *图：线性化稳定性的判定流程。特征值实部全负 → 局部指数稳定；存在正实部 → 不稳定；实部全为零 → 线性化无法判断，必须回到非线性分析（例如能量函数或相图）。*
 
@@ -881,7 +884,7 @@ $$
 - 对线性系统：**可镇定严格弱于可控**。不可控子空间若是自然稳定的，系统仍可镇定；反之不成立。
 - 对非线性系统：关系微妙。**Brockett 的著名结果**：非线性可控性**不**蕴含"存在可微控制律镇定"。
 
-![LQR 框图](md_figures/lqr_block.png)
+![LQR 框图](notes_figures/lqr_block.png)
 
 *图：LQR 的两个阶段。离线解 Riccati 方程得到 $K$；在线只是 $u=-K(x-x^\star)$ 的一次矩阵乘法。$Q$ 惩罚状态误差，$R$ 惩罚控制量。*
 
@@ -1506,7 +1509,7 @@ $$
 
 ### 3.8.2 Exercise 3.2（写 URDF + LQR）
 
-![双摆几何与坐标系](md_figures/double_pendulum_geometry.png)
+![双摆几何与坐标系](notes_figures/double_pendulum_geometry.png)
 
 *图：双摆几何（教材原图）。左图是一般位形；右图是 $\theta_0=\theta_1=0$。注意右图两根杆完全重合：第二摆的球在它自己的 link 坐标系中位于 $z=+1$，而关节在 $z=-1$，所以从关节向上回到 $z=0$。这正是 URDF 中“joint origin 在父系、child 的 inertial/visual 在关节系”的直观含义。*
 
@@ -1517,11 +1520,11 @@ $$
 
 ### 3.8.3 Exercise 3.3（离散与连续 LTI 的可控性）——完整解答
 
-![离散双积分器两步路径](md_figures/two_step_path.png)
+![离散双积分器两步路径](notes_figures/two_step_path.png)
 
 *图：从 $s_{0,0}$ 到 $s_{i,j}$ 的两步构造。第一步只改变 $x_2$（竖直方向），第二步用 $x_2$ 把 $x_1$ 推到位（斜向）。因此 $u_0=i,\ u_1=j-i$，最少 2 步；1 步时 $x_1$ 仍为 0。*
 
-![可控性几何示意](md_figures/controllability_geometry.png)
+![可控性几何示意](notes_figures/controllability_geometry.png)
 
 *图：$(A_2,B_2)$ 的可控性几何。$B_2=[1,1]^\top$ 与 $A_2B_2=B_2$ 同向，所以输入只能沿对角线驱动；正交方向 $[1,-1]^\top$ 永远不受影响，这就是可控性矩阵秩为 1 的几何原因。*
 
@@ -1650,7 +1653,7 @@ $$
 
 ### 3.8.4 Exercise 3.4（非线性稳定性 vs. 线性化）——填表
 
-![线性化稳定性判定流程](md_figures/stability_flow.png)
+![线性化稳定性判定流程](notes_figures/stability_flow.png)
 
 *图：线性化稳定性的判定流程。特征值实部全负 → 局部指数稳定；存在正实部 → 不稳定；实部全为零 → 线性化无法判断，必须回到非线性分析（例如能量函数或相图）。*
 

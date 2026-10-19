@@ -2,3 +2,9 @@ __pycache__/
 *.pyc
 .DS_Store
 .ipynb_checkpoints/
+
+# local preview copies (workspace-root fallback)
+/notes_figures/
+/exercises_analysis/
+/figures/
+/Ch-3/exercises_analysis/
