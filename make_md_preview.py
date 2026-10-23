@@ -19,6 +19,7 @@ FILES = [
     "Ch-3/Ch3_Acrobot_CartPole_Quadrotor_深度推导笔记.md",
     "Ch-3/Ch.3 Exercises/Ch3_Section3.8_作业解答.md",
     "Ch-4/Ch4_Simple_Models_知识点.md",
+    "Ch-5/Ch5_Highly_Articulated_Legged_Robots_深度推导笔记.md",
 ]
 
 CSS = """
