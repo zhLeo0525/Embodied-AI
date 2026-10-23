@@ -1,0 +1,56 @@
+{
+  "identity_error": 0.0,
+  "max_tracking_error_vs_desired": 0.15285821674188482,
+  "T": 8.5,
+  "max_abs_com_y": 0.046282641666176495,
+  "max_abs_com_vx": 0.3837050194552226,
+  "max_abs_com_vy": 0.05664083823223376,
+  "max_zmp_x": 2.5,
+  "feedback_final_error_nominal": 1.4388476185247882e-05,
+  "feedback_final_error_perturbed": 1.5244305746787902e-05,
+  "feedback_peak_velocity_error": 0.40311288741492746,
+  "timing_sensitivity": {
+    "0.2": {
+      "T": 7.000000000000001,
+      "max_abs_y": 0.04426528907159177,
+      "max_abs_vy": 0.05464773031200737,
+      "max_abs_vx": 0.4723719326499829,
+      "max_zmp_y": 0.05,
+      "x_final": 2.485151880699559
+    },
+    "0.5": {
+      "T": 8.5,
+      "max_abs_y": 0.046282641666176495,
+      "max_abs_vy": 0.05664083823223376,
+      "max_abs_vx": 0.3837050194552226,
+      "max_zmp_y": 0.05,
+      "x_final": 2.4912502342525578
+    },
+    "0.8": {
+      "T": 10.0,
+      "max_abs_y": 0.047865338096890336,
+      "max_abs_vy": 0.056357555998232986,
+      "max_abs_vx": 0.32548189788275295,
+      "max_zmp_y": 0.05,
+      "x_final": 2.4950588972571857
+    }
+  },
+  "R_sensitivity": {
+    "0.0001": {
+      "max_tracking_error": 0.09539883654923526,
+      "max_abs_acceleration": 1.2364866664823018
+    },
+    "0.01": {
+      "max_tracking_error": 0.08110822756278097,
+      "max_abs_acceleration": 0.849006051784894
+    },
+    "0.1": {
+      "max_tracking_error": 0.15285821674188482,
+      "max_abs_acceleration": 0.33290964838199105
+    },
+    "1.0": {
+      "max_tracking_error": 0.22842365822747845,
+      "max_abs_acceleration": 0.30771377308361014
+    }
+  }
+}

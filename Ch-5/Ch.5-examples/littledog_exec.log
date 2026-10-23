@@ -1,0 +1,6 @@
+[NbConvertApp] Converting notebook Exp5'2-littledog.ipynb to notebook
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 41310 bytes to Exp5'2-littledog.ipynb
+real 13.92
+user 8.83
+sys 0.62

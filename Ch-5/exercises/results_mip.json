@@ -1,0 +1,31 @@
+{
+    "tests": [
+        {
+            "name": "Tests that binaries imply correctly the positioning of the feet",
+            "score": 5,
+            "max_score": 5,
+            "status": "passed"
+        },
+        {
+            "name": "Tests that the positioning of the feet minimized the sum of the",
+            "score": 4,
+            "max_score": 4,
+            "status": "passed"
+        },
+        {
+            "name": "Tests that a foot is assigned to a single stepping stone",
+            "score": 3,
+            "max_score": 3,
+            "status": "passed"
+        },
+        {
+            "name": "Tests the constraints on the relative position of the feet",
+            "score": 4,
+            "max_score": 4,
+            "status": "passed"
+        }
+    ],
+    "leaderboard": [],
+    "execution_time": "4.61",
+    "score": 16
+}

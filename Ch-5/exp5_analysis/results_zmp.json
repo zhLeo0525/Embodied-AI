@@ -1,0 +1,77 @@
+{
+  "nominal": {
+    "duration_s": 8.5,
+    "peak_abs_com_y_m": 0.04625374630594454,
+    "max_zmp_error_m": 0.15753799969891905,
+    "rms_zmp_error_m": 0.07776175502854682,
+    "final_com_x_m": 2.490406769344386
+  },
+  "timing_sweep": [
+    {
+      "double_support_s": 0.2,
+      "single_support_s": 1.4,
+      "label": "DS 0.2 / SS 1.4",
+      "duration_s": 9.399999999999999,
+      "peak_abs_com_y_m": 0.04899232076484725,
+      "max_zmp_error_m": 0.20388711973475365,
+      "rms_zmp_error_m": 0.09828607408796564,
+      "final_com_x_m": 2.500897521570752
+    },
+    {
+      "double_support_s": 0.5,
+      "single_support_s": 1.0,
+      "label": "DS 0.5 / SS 1.0 (nominal)",
+      "duration_s": 8.5,
+      "peak_abs_com_y_m": 0.04625374630594454,
+      "max_zmp_error_m": 0.15753799969891905,
+      "rms_zmp_error_m": 0.07776175502854682,
+      "final_com_x_m": 2.490406769344386
+    },
+    {
+      "double_support_s": 1.0,
+      "single_support_s": 0.5,
+      "label": "DS 1.0 / SS 0.5",
+      "duration_s": 8.0,
+      "peak_abs_com_y_m": 0.041074650706343606,
+      "max_zmp_error_m": 0.09528750477962801,
+      "rms_zmp_error_m": 0.04656424876531443,
+      "final_com_x_m": 2.4662509930306755
+    },
+    {
+      "double_support_s": 1.0,
+      "single_support_s": 1.0,
+      "label": "DS 1.0 / SS 1.0",
+      "duration_s": 11.0,
+      "peak_abs_com_y_m": 0.04850837806271722,
+      "max_zmp_error_m": 0.10081197276177474,
+      "rms_zmp_error_m": 0.05179279823323708,
+      "final_com_x_m": 2.4959040743078895
+    }
+  ],
+  "feedback": [
+    {
+      "case": "nominal",
+      "max_x_deviation_m": 0.0,
+      "final_x_deviation_m": 0.0,
+      "final_y_deviation_m": 0.0
+    },
+    {
+      "case": "push +0.30 m/s in x",
+      "max_x_deviation_m": 0.07089825569887759,
+      "final_x_deviation_m": 1.164102710227155e-06,
+      "final_y_deviation_m": 0.0
+    },
+    {
+      "case": "push -0.30 m/s in x",
+      "max_x_deviation_m": 0.07089825569887763,
+      "final_x_deviation_m": -1.164102710227155e-06,
+      "final_y_deviation_m": 0.0
+    },
+    {
+      "case": "CoM offset (5, 3) cm",
+      "max_x_deviation_m": 0.05,
+      "final_x_deviation_m": 8.454527344881058e-08,
+      "final_y_deviation_m": 5.0727163421193655e-08
+    }
+  ]
+}

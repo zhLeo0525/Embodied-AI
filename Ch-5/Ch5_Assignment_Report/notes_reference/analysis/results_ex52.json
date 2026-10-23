@@ -1,0 +1,26 @@
+{
+  "parameters": {
+    "m": 1.0,
+    "g": 9.81,
+    "l": 0.5,
+    "h": 0.08,
+    "L1": 0.12,
+    "L2": 0.08
+  },
+  "unstable_rate_sqrt_g_over_l": 4.4294469180700204,
+  "theta_H": 0.7853981633974483,
+  "theta_T": 2.5535900500422253,
+  "theta_range_no_actuator": [
+    0.7853981633974483,
+    2.5535900500422253
+  ],
+  "theta_range_actuator": [
+    1.3284304757559333,
+    1.731486979746807
+  ],
+  "actuator_range_width": 0.4030565039908738,
+  "optimal_L1_for_range": 0.01,
+  "optimal_angle_range": 0.4097976300476509,
+  "zmp_formula_error": 9.71445146547012e-17,
+  "line_formula_error": 0.0
+}

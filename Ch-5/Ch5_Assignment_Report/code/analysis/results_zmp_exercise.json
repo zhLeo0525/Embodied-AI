@@ -1,0 +1,25 @@
+{
+  "parameters": {
+    "h": 0.08,
+    "L1": 0.15,
+    "L2": 0.08,
+    "l": 1.0
+  },
+  "unactuated": {
+    "zmp_expression": "-h * cot(theta)",
+    "theta_zmp_at_toe_rad": 2.6516353273360647,
+    "theta_zmp_at_toe_deg": 151.92751306414704,
+    "theta_heel_lift_rad": 2.6516353273360647,
+    "theta_zmp_at_heel_rad": 0.7853981633974483,
+    "theta_zmp_at_heel_deg": 45.0
+  },
+  "actuated": {
+    "zmp_expression": "l * cos(theta)",
+    "theta_min_rad": 1.4202280540182106,
+    "theta_min_deg": 81.37307344132137,
+    "theta_max_rad": 1.6508819068285556,
+    "theta_max_deg": 94.58856573578583,
+    "range_rad": 0.230653852810345,
+    "range_deg": 13.215492294464472
+  }
+}
