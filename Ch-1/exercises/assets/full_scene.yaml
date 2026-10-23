@@ -1,0 +1,47 @@
+directives:
+- add_model:
+    name: iiwa_left
+    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/models/iiwa14_primitive_collision.urdf
+- add_weld:
+    parent: world
+    child: iiwa_left::iiwa_link_0
+- add_model:
+    name: iiwa_right
+    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/models/iiwa14_primitive_collision.urdf
+- add_weld:
+    parent: world
+    child: iiwa_right::iiwa_link_0
+    X_PC:
+        translation: [0.0, 1.0, 0.0]
+- add_model:
+    name: table
+    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/exercises/assets/table.sdf
+- add_weld:
+    parent: world
+    child: table::table_link
+    X_PC:
+        translation: [0.5, 0.0, -0.05]
+- add_model:
+    name: B_letter
+    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/exercises/assets/B_model/B.sdf
+    default_free_body_pose:
+        B_body_link:
+            translation: [0.7, 0.0, 1.0]
+- add_model:
+    name: P_letter
+    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/exercises/assets/P_model/P.sdf
+    default_free_body_pose:
+        P_body_link:
+            translation: [0.8999999999999999, 0.0, 1.0]
+- add_model:
+    name: G_letter
+    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/exercises/assets/G_model/G.sdf
+    default_free_body_pose:
+        G_body_link:
+            translation: [1.1, 0.0, 1.0]
+- add_model:
+    name: mustard_bottle
+    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/exercises/assets/object.sdf
+    default_free_body_pose:
+        mustard_bottle_link:
+            translation: [0.5, 0.0, 0.75]

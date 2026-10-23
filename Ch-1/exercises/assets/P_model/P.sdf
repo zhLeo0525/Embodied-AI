@@ -1,0 +1,123 @@
+<sdf xmlns:drake="drake.mit.edu" version="1.7">
+  <model name="P">
+    <link name="P_body_link">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <mass>1.0</mass>
+        <pose>0.07691 0.12080 0.03500 0 0 0</pose>
+        <inertia>
+          <ixx>3.22855e-03</ixx>
+          <ixy>-7.05796e-04</ixy>
+          <ixz>1.61745e-18</ixz>
+          <iyy>2.09954e-03</iyy>
+          <iyz>5.39149e-19</iyz>
+          <izz>4.51143e-03</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>P.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision_000">
+        <geometry>
+          <mesh>
+            <uri>P_parts/convex_piece_000.obj</uri>
+            <drake:declare_convex/>
+          </mesh>
+        </geometry>
+        <drake:proximity_properties>
+          <drake:rigid_hydroelastic/>
+          <drake:mu_dynamic>1.000</drake:mu_dynamic>
+        </drake:proximity_properties>
+      </collision>
+      <collision name="collision_001">
+        <geometry>
+          <mesh>
+            <uri>P_parts/convex_piece_001.obj</uri>
+            <drake:declare_convex/>
+          </mesh>
+        </geometry>
+        <drake:proximity_properties>
+          <drake:rigid_hydroelastic/>
+          <drake:mu_dynamic>1.000</drake:mu_dynamic>
+        </drake:proximity_properties>
+      </collision>
+      <collision name="collision_002">
+        <geometry>
+          <mesh>
+            <uri>P_parts/convex_piece_002.obj</uri>
+            <drake:declare_convex/>
+          </mesh>
+        </geometry>
+        <drake:proximity_properties>
+          <drake:rigid_hydroelastic/>
+          <drake:mu_dynamic>1.000</drake:mu_dynamic>
+        </drake:proximity_properties>
+      </collision>
+      <collision name="collision_003">
+        <geometry>
+          <mesh>
+            <uri>P_parts/convex_piece_003.obj</uri>
+            <drake:declare_convex/>
+          </mesh>
+        </geometry>
+        <drake:proximity_properties>
+          <drake:rigid_hydroelastic/>
+          <drake:mu_dynamic>1.000</drake:mu_dynamic>
+        </drake:proximity_properties>
+      </collision>
+      <collision name="collision_004">
+        <geometry>
+          <mesh>
+            <uri>P_parts/convex_piece_004.obj</uri>
+            <drake:declare_convex/>
+          </mesh>
+        </geometry>
+        <drake:proximity_properties>
+          <drake:rigid_hydroelastic/>
+          <drake:mu_dynamic>1.000</drake:mu_dynamic>
+        </drake:proximity_properties>
+      </collision>
+      <collision name="collision_005">
+        <geometry>
+          <mesh>
+            <uri>P_parts/convex_piece_005.obj</uri>
+            <drake:declare_convex/>
+          </mesh>
+        </geometry>
+        <drake:proximity_properties>
+          <drake:rigid_hydroelastic/>
+          <drake:mu_dynamic>1.000</drake:mu_dynamic>
+        </drake:proximity_properties>
+      </collision>
+      <collision name="collision_006">
+        <geometry>
+          <mesh>
+            <uri>P_parts/convex_piece_006.obj</uri>
+            <drake:declare_convex/>
+          </mesh>
+        </geometry>
+        <drake:proximity_properties>
+          <drake:rigid_hydroelastic/>
+          <drake:mu_dynamic>1.000</drake:mu_dynamic>
+        </drake:proximity_properties>
+      </collision>
+      <collision name="collision_007">
+        <geometry>
+          <mesh>
+            <uri>P_parts/convex_piece_007.obj</uri>
+            <drake:declare_convex/>
+          </mesh>
+        </geometry>
+        <drake:proximity_properties>
+          <drake:rigid_hydroelastic/>
+          <drake:mu_dynamic>1.000</drake:mu_dynamic>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>

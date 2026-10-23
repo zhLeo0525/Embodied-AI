@@ -1,0 +1,19 @@
+{
+    "tests": [
+        {
+            "name": "Test creation of full system with table and initials",
+            "score": 15,
+            "max_score": 15,
+            "status": "passed"
+        },
+        {
+            "name": "Test that simulate_full_system function runs without errors",
+            "score": 15,
+            "max_score": 15,
+            "status": "passed"
+        }
+    ],
+    "leaderboard": [],
+    "execution_time": "3.67",
+    "score": 30
+}
