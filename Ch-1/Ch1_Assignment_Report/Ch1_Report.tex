@@ -73,8 +73,9 @@ Student ID: 220261979\\[2pt]
 
 \begin{abstract}
 This report covers the Chapter~1 assignment from the Manipulation textbook.
-Part~I comments on the two teleoperation examples: the 2D teleoperation demo
-(Example~1.2) and the 3D teleoperation demo (Example~1.3).  Part~II solves the
+Part~I comments on the two required examples: the 3D teleoperation demo
+(Example~1.2) and the System Diagrams example (Example~1.3).  The 2D
+teleoperation demo (Example~1.1) is included as background.  Part~II solves the
 four active exercises of Section~1.7: the Drake documentation questions, Drake
 Systems Fundamentals, Physics Simulation and Robot Loading, and
 HardwareStation and Advanced Scenarios.  The notebooks were executed, the
@@ -91,8 +92,8 @@ reproduced here.
 
 The assignment is:
 \begin{itemize}[leftmargin=1.4em]
-  \item \textbf{Example 1.2}: Teleoperation in 2D.
-  \item \textbf{Example 1.3}: Teleoperation in 3D.
+  \item \textbf{Example 1.2}: Teleoperation in 3D.
+  \item \textbf{Example 1.3}: System Diagrams.
   \item \textbf{Section 1.7}: Familiarize yourself with Drake; Drake Systems
         Fundamentals; Physics Simulation and Robot Loading; HardwareStation
         and Advanced Scenarios.
@@ -113,7 +114,7 @@ object.
 \toprule
 Contents & Location \\
 \midrule
-Teleoperation notebook & \texttt{Ch-1/examples/Exp1.2-1.3-teleoperation.ipynb} \\
+Teleoperation notebook & \texttt{Ch-1/examples/Exp1.1-1.2-teleoperation.ipynb} \\
 Drake Systems notebook & \texttt{Ch-1/exercises/Exp1.7.2-drake-systems.ipynb} \\
 Physics Simulation notebook & \texttt{Ch-1/exercises/Exp1.7.3-physics-simulation.ipynb} \\
 HardwareStation notebook & \texttt{Ch-1/exercises/Exp1.7.4-hardwarestation.ipynb} \\
@@ -128,15 +129,15 @@ This report & \texttt{Ch-1/Ch1\_Assignment\_Report/} \\
 \toprule
 Exercise & Autograder result \\
 \midrule
-1.7.2 Drake Systems Fundamentals & 70/70 \\
-1.7.3 Physics Simulation & 50/50 \\
-1.7.4 HardwareStation & 50/50 \\
+Exercise 1.2 Drake Systems Fundamentals & 70/70 \\
+Exercise 1.3 Physics Simulation & 50/50 \\
+Exercise 1.4 HardwareStation & 50/50 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 %=====================================================================
-\section{Example 1.2: Teleoperation in 2D}
+\section{Background: Example 1.1 -- Teleoperation in 2D}
 %=====================================================================
 
 \subsection{Architecture}
@@ -199,7 +200,7 @@ the two ingredients of every teleoperation stack: a \emph{pose interface}
 reachable workspace or violates a joint limit.
 
 %=====================================================================
-\section{Example 1.3: Teleoperation in 3D}
+\section{Example 1.2: Teleoperation in 3D}
 %=====================================================================
 
 The 3D example uses the same architecture with a 7-DoF IIWA14, a 6-DoF pose
@@ -241,7 +242,57 @@ solves the kinematic tracking problem.  Obstacle avoidance and grasp planning
 are separate layers that will be studied later in the course.
 
 %=====================================================================
-\section{Section 1.7(a): Familiarize Yourself with Drake}
+\section{Example 1.3: System Diagrams}
+%=====================================================================
+
+Example~1.3 is the \emph{System Diagrams} example.  It does not introduce a
+new controller; it makes the modeling paradigm explicit: every nontrivial
+manipulation system is a \texttt{Diagram} of smaller systems, each with its own
+state and input/output ports.  The example lets the reader expand the
+\texttt{iiwa\_controller} block and inspect how the teleoperation demo is
+assembled from a plant, a controller, a visualizer and the sliders.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,node distance=0.9cm,
+  box/.style={draw,rounded corners,align=center,fill=blue!5,
+              minimum width=2.7cm,minimum height=0.85cm}]
+  \node[box] (station) {HardwareStation\\ (plant + scene graph)};
+  \node[box,below left=0.9cm and 0.0cm of station] (ctrl) {iiwa controller};
+  \node[box,below right=0.9cm and 0.0cm of station] (vis) {Meshcat\\ visualizer};
+  \node[box,left=1.0cm of ctrl] (sliders) {teleop sliders};
+  \draw[->] (sliders)--(ctrl);
+  \draw[->] (ctrl)--(station);
+  \draw[->] (station)--(vis);
+  \draw[->] (station.south west) -- ++(-0.2,-1.0) -| (ctrl.south);
+\end{tikzpicture}
+\caption{A system diagram in the spirit of Example~1.3.  The station is
+itself a nested diagram; the controller, visualizer and teleop interface are
+separate systems connected by ports.  The interactive example lets the reader
+expand the \texttt{iiwa\_controller} block to see this structure.}
+\label{fig:system_diagram}
+\end{figure}
+
+\begin{intuition}[breakable=false,title={Why block diagrams are worth the overhead}]
+A block diagram is a contract: each block declares its state and its ports,
+and the diagram builder checks the wiring.  This makes it possible to swap a
+controller, insert a filter, or replace the plant without touching the rest of
+the system.  The price is that you must declare state and ports instead of
+writing a single monolithic script.  For a small demo the price may feel high;
+for a manipulation stack with perception, planning, control and simulation it
+is what keeps the pieces composable.
+\end{intuition}
+
+\textbf{Comments.}  The example is conceptual, but it connects directly to the
+rest of the assignment.  The teleoperation examples (Examples~1.1 and~1.2) are
+diagrams; the IIWA14/controller/table scene in Exercise~1.3 is a diagram; and
+the HardwareStation scenario in Exercise~1.4 is a declarative description of a
+diagram.  The \texttt{iiwa\_controller} block in the interactive graphic is a
+good example of hidden complexity: it contains the position controller and the
+model driver, but the rest of the diagram only sees its ports.
+
+%=====================================================================
+\section{Section 1.7, Exercise 1.1: Familiarize Yourself with Drake}
 %=====================================================================
 
 The three documentation questions and their answers:
@@ -281,7 +332,7 @@ default.
 \end{pitfall}
 
 %=====================================================================
-\section{Section 1.7(b): Drake Systems Fundamentals}
+\section{Section 1.7, Exercise 1.2: Drake Systems Fundamentals}
 %=====================================================================
 
 \subsection{The inverted pendulum system}
@@ -364,7 +415,7 @@ must be obtained with \texttt{GetMyContextFromRoot} (or the mutable version)
 before setting subsystem state.
 
 %=====================================================================
-\section{Section 1.7(c): Physics Simulation and Robot Loading}
+\section{Section 1.7, Exercise 1.3: Physics Simulation and Robot Loading}
 %=====================================================================
 
 \subsection{IIWA14 model and P controller}
@@ -448,7 +499,7 @@ SDF assets, and simulation.  The full-system test also shows how to set free
 body poses for the letters and how to load local SDF files.
 
 %=====================================================================
-\section{Section 1.7(d): HardwareStation and Advanced Scenarios}
+\section{Section 1.7, Exercise 1.4: HardwareStation and Advanced Scenarios}
 %=====================================================================
 
 The last exercise replaces the manual \texttt{DiagramBuilder} wiring with
@@ -546,11 +597,12 @@ Main files:
 \toprule
 Topic & File \\
 \midrule
-Examples 1.2/1.3 & \texttt{examples/Exp1.2-1.3-teleoperation.ipynb} \\
-1.7.1 answers & this report, Section 4 \\
-1.7.2 Drake Systems & \texttt{exercises/Exp1.7.2-drake-systems.ipynb} \\
-1.7.3 Physics Simulation & \texttt{exercises/Exp1.7.3-physics-simulation.ipynb} \\
-1.7.4 HardwareStation & \texttt{exercises/Exp1.7.4-hardwarestation.ipynb} \\
+Examples 1.1--1.2 teleoperation & \texttt{examples/Exp1.1-1.2-teleoperation.ipynb} \\
+Example 1.3 diagrams & this report, Section 3 \\
+Exercise 1.1 answers & this report, Section 4 \\
+Exercise 1.2 Drake Systems & \texttt{exercises/Exp1.7.2-drake-systems.ipynb} \\
+Exercise 1.3 Physics Simulation & \texttt{exercises/Exp1.7.3-physics-simulation.ipynb} \\
+Exercise 1.4 HardwareStation & \texttt{exercises/Exp1.7.4-hardwarestation.ipynb} \\
 Figures & \texttt{exp1\_analysis/make\_ch1\_figures.py} \\
 \bottomrule
 \end{tabular}
@@ -560,7 +612,7 @@ Headless execution:
 \begin{lstlisting}[language=bash]
 COLAB_TESTING=1 /Users/leo/venvs/drake/bin/jupyter nbconvert \
   --to notebook --execute --inplace --ExecutePreprocessor.timeout=300 \
-  "examples/Exp1.2-1.3-teleoperation.ipynb"
+  "examples/Exp1.1-1.2-teleoperation.ipynb"
 \end{lstlisting}
 
 Report compilation:

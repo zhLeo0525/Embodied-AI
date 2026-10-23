@@ -1,15 +1,16 @@
 # Chapter 1 -- Manipulation: Introduction, Teleoperation and Drake
 
-This folder contains the Manipulation Chapter 1 assignment (Examples 1.2/1.3
-and all active Section 1.7 exercises).
+This folder contains the Manipulation Chapter 1 assignment: Example 1.2
+(3D teleoperation), Example 1.3 (System Diagrams), and all active Section 1.7
+exercises.  Example 1.1 (2D teleoperation) is included as background.
 
 ## Main deliverables
 
 | File | Description |
 |---|---|
-| `Ch1_Assignment_Report/Ch1_Report.pdf` | Final report (9 pages, English) |
+| `Ch1_Assignment_Report/Ch1_Report.pdf` | Final report (11 pages, English) |
 | `Ch1_Assignment_Report/Ch1_Report.tex` | LaTeX source |
-| `examples/Exp1.2-1.3-teleoperation.ipynb` | 2D and 3D teleoperation examples, executed |
+| `examples/Exp1.1-1.2-teleoperation.ipynb` | 2D/3D teleoperation examples (1.1/1.2), executed |
 | `exercises/Exp1.7.2-drake-systems.ipynb` | Drake Systems Fundamentals, **70/70** |
 | `exercises/Exp1.7.3-physics-simulation.ipynb` | IIWA14 + controller + SDF assets, **50/50** |
 | `exercises/Exp1.7.4-hardwarestation.ipynb` | HardwareStation and scenarios, **50/50** |
