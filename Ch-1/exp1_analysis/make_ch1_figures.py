@@ -54,10 +54,11 @@ class SimpleController(LeafSystem):
 
 
 def iiwa_plot():
-    model = str((Path.cwd() / "models" / "iiwa14_primitive_collision.urdf").resolve())
     builder = DiagramBuilder()
     plant, sg = AddMultibodyPlantSceneGraph(builder, time_step=1e-4)
-    (iiwa,) = Parser(plant).AddModels(model)
+    (iiwa,) = Parser(plant).AddModelsFromUrl(
+        "package://drake_models/iiwa_description/urdf/iiwa14_primitive_collision.urdf"
+    )
     plant.WeldFrames(plant.world_frame(), plant.GetFrameByName("iiwa_link_0", iiwa))
     plant.Finalize()
     ctrl = builder.AddSystem(SimpleController(120.0, np.zeros(7)))

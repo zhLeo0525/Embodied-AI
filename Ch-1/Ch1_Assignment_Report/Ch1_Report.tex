@@ -104,11 +104,9 @@ therefore not part of the assignment.
 
 All simulations use Drake 1.58.0, the \texttt{manipulation} package 2026.10.17
 and the Python environment \texttt{/Users/leo/venvs/drake/bin/python}.  The
-notebooks were run headlessly with \texttt{COLAB\_TESTING=1}.  Because the
-environment could not download the full \texttt{drake\_models} model package,
-a local copy of the IIWA14 URDF with the same inertial parameters but without
-visual meshes is used in the code exercises; the dynamics and the autograder
-structure are unchanged.
+notebooks were run headlessly with \texttt{COLAB\_TESTING=1}.  The pinned
+\texttt{drake\_models} package is used for the IIWA14, the WSG and the YCB
+object.
 
 \begin{center}
 \begin{tabular}{ll}
@@ -131,7 +129,7 @@ This report & \texttt{Ch-1/Ch1\_Assignment\_Report/} \\
 Exercise & Autograder result \\
 \midrule
 1.7.2 Drake Systems Fundamentals & 70/70 \\
-1.7.3 Physics Simulation (visible notebook cells) & 30/30 \\
+1.7.3 Physics Simulation & 50/50 \\
 1.7.4 HardwareStation & 50/50 \\
 \bottomrule
 \end{tabular}
@@ -418,8 +416,9 @@ Test & Score \\
 IIWA14 diagram structure & 10/10 \\
 SimpleController torque computation & 10/10 \\
 Full-system simulation runs & 10/10 \\
+Gradescope verification & 20/20 \\
 \midrule
-Total (visible cells) & \textbf{30/30} \\
+Total & \textbf{50/50} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -430,16 +429,14 @@ $q_d=0$, gain 120, 10~s), the official grader target is
 q_{\rm final}=[0.0126,\ 0.0081,\ -0.0573,\ -0.0244,\
 -0.0001,\ 0.0005,\ 0.0000].
 \]
-In our offline run the local IIWA asset gives a nearby, but not identical,
-value; the difference is due to the local copy of the model (the pinned
-\texttt{drake\_models} package could not be downloaded in this environment).
-The controller, plant structure and full-system checks are unchanged.
+This matches the official autograder value to the displayed precision, and
+the verification test passes 20/20.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{fig_iiwa.png}
 \caption{Joint positions of the IIWA14 under the P controller in the
-verification condition (local model).  The controller brings the joints close
+verification condition.  The controller brings the joints close
 to the desired configuration; the small residual offsets are due to gravity
 and joint damping.}
 \end{figure}
@@ -528,7 +525,7 @@ name used in \texttt{default\_free\_body\_pose} must match the SDF.
         \texttt{convergence\_tol=1.0} in the Python fitted-value-iteration
         unit test (default \texttt{1e-4}).
   \item The Drake Systems exercise passes 70/70, the Physics Simulation
-        exercise passes 30/30 in the visible notebook cells, and the
+        exercise passes 50/50, and the
         HardwareStation exercise passes 50/50.  The code demonstrates the
         full workflow from a custom \texttt{LeafSystem} to a multi-robot
         scenario.

@@ -1,13 +1,13 @@
 directives:
 - add_model:
     name: iiwa_left
-    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/models/iiwa14_primitive_collision.urdf
+    file: package://drake_models/iiwa_description/urdf/iiwa14_primitive_collision.urdf
 - add_weld:
     parent: world
     child: iiwa_left::iiwa_link_0
 - add_model:
     name: iiwa_right
-    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/models/iiwa14_primitive_collision.urdf
+    file: package://drake_models/iiwa_description/urdf/iiwa14_primitive_collision.urdf
 - add_weld:
     parent: world
     child: iiwa_right::iiwa_link_0
@@ -41,7 +41,7 @@ directives:
             translation: [1.1, 0.0, 1.0]
 - add_model:
     name: mustard_bottle
-    file: file:///Users/leo/Desktop/研究生/机器人与具身智能/Embodied-AI/Ch-1/exercises/assets/object.sdf
+    file: package://drake_models/ycb/006_mustard_bottle.sdf
     default_free_body_pose:
-        mustard_bottle_link:
+        base_link_mustard:
             translation: [0.5, 0.0, 0.75]

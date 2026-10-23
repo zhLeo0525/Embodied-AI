@@ -11,7 +11,7 @@ and all active Section 1.7 exercises).
 | `Ch1_Assignment_Report/Ch1_Report.tex` | LaTeX source |
 | `examples/Exp1.2-1.3-teleoperation.ipynb` | 2D and 3D teleoperation examples, executed |
 | `exercises/Exp1.7.2-drake-systems.ipynb` | Drake Systems Fundamentals, **70/70** |
-| `exercises/Exp1.7.3-physics-simulation.ipynb` | IIWA14 + controller + SDF assets, visible autograders **30/30** |
+| `exercises/Exp1.7.3-physics-simulation.ipynb` | IIWA14 + controller + SDF assets, **50/50** |
 | `exercises/Exp1.7.4-hardwarestation.ipynb` | HardwareStation and scenarios, **50/50** |
 | `exp1_analysis/make_ch1_figures.py` | Figure generation script |
 | `Ch1_Assignment_Report/Ch1_Assignment_Submission.zip` | Report + code |
