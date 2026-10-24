@@ -363,7 +363,7 @@ The 3D quadrotor has four thrust inputs and six degrees of freedom.  It is
 underactuated, but the hover equilibrium is stabilisable.  The LQR is
 linearised around a point where the total thrust balances gravity, not around
 zero thrust.  From a 0.2~rad roll and 0.1~rad pitch perturbation the official
-stabilising controller and our LQR both return to hover in about 1.08~s with a
+stabilising controller and my LQR both return to hover in about 1.08~s with a
 peak thrust near 3~N.  The sensitivity to $Q$, $R$ and initial tilt follows
 the same pattern as in the planar case.
 
@@ -380,6 +380,16 @@ notebook are
 {1+\sin^2\theta}.
 \]
 At the upright point $\bx^\star=[0,\pi,0,0]^\top$,
+At $\theta=\pi+\delta$, $\sin\theta\approx-\delta$ and
+$\cos\theta\approx-1$.  Substituting these into $f$ and dropping terms that
+are second order in $\delta$, $\dot\theta$ and $u$ gives
+\[
+\ddot x\approx u,\qquad
+\ddot\theta\approx g\delta+u.
+\]
+The state is ordered as $[x,\delta,\dot x,\dot\delta]$, so the two acceleration
+rows become $[0,g,0,0]$ and $[0,2g,0,0]$, and the input enters both
+accelerations with coefficient one.  This gives
 \[
 \bA_{\rm lin}=\begin{bmatrix}
 0&0&1&0\\0&0&0&1\\0&9.81&0&0\\0&19.62&0&0
@@ -681,6 +691,36 @@ apex it resets the preload to zero.  The mechanical energy is
 E=\frac12m_b\dot z_b^2+\frac12m_l(\dot z_b+\dot l)^2
 +m_bgz_b+m_lg(z_b+l)+\frac12k(l+\delta)^2.
 \]
+At the bottom the leg length is $l=-z_b$ and $\dot z_b=0$.  Before the
+preload,
+\[
+E(t_{bt}^-)=m_bgz_b+\frac12kz_b^2,
+\]
+and after applying $\bar\delta$,
+\[
+E(t_{bt}^+)=m_bgz_b+\frac12k(\bar\delta-z_b)^2.
+\]
+Energy conservation from bottom to lift-off gives the body kinetic energy just
+before impact:
+\[
+\frac12m_b\dot z_b^2(t_{lo}^-)
+=m_bgz_b+\frac12kz_b^2-k\bar\delta z_b.
+\]
+At lift-off the body and leg stick together, so momentum conservation gives
+\[
+\dot z_b(t_{lo}^+)=\frac{m_b}{m_b+m_l}\dot z_b(t_{lo}^-),
+\]
+and therefore
+\[
+E(t_{lo}^+)=\frac{m_b}{m_b+m_l}
+\left[m_bgz_b+\frac12kz_b^2-k\bar\delta z_b\right]
++\frac12k\bar\delta^2.
+\]
+At the apex the body and leg are at rest at height $h$:
+\[
+E(t_{ap}^-)=(m_b+m_l)gh+\frac12k\bar\delta^2.
+\]
+Setting $E(t_{lo}^+)=E(t_{ap}^-)$ and solving for $\bar\delta$ gives
 Equating the energy at the bottom after the preload, at lift-off after the
 inelastic impact, and at the apex gives
 \[
@@ -775,6 +815,14 @@ stride is 0.6875~s and the CoM height varies between 0.131 and 0.148~m.}
 \section{Section 5.8: Exercises 5.1--5.3}
 
 The section contains three exercises.
+
+The section formulates footstep planning in two ways.  In the MIQP, a binary
+variable assigns each foot to one stepping stone, the continuous foot positions
+are constrained to the corresponding stone, and the objective penalises the
+sum of the step lengths.  In the GCS formulation the terrain is decomposed
+into convex regions, and the problem becomes a shortest path through a graph
+of convex sets.  Both formulations use the same reachability and foot-geometry
+constraints; they differ in how the discrete choice is represented.
 
 \subsection{Exercise 5.1: Footstep Planning via MIQP}
 The terrain and the footstep sequence are encoded with binary variables.  The
