@@ -66,16 +66,19 @@ Student ID: 220261979\\[2pt]
 \maketitle
 
 \begin{abstract}
-This report presents the work for Assignment~1.  The assignment combines three
-chapters of \emph{Underactuated Robotics}---acrobots, cart-poles and
-quadrotors; simple models of walking and running; and highly-articulated
-legged robots---with the introduction of the \emph{Robotic Manipulation}
-notes.  For the examples we ran the supplied code, reproduced the main
-results, and carried out parameter and robustness studies where they were
-useful.  For the exercise sections we solved all active problems.  The report
-is organised as one continuous document: an introduction, three chapters on
-underactuated systems, one chapter on manipulation, a short conclusion, and an
-appendix with the code and reproduction commands.
+This report documents the four parts of Assignment~1: three chapters of
+\emph{Underactuated Robotics} (acrobots, cart-poles and quadrotors; simple
+models of walking and running; highly-articulated legged robots) and the
+introduction of \emph{Robotic Manipulation}.  I ran the supplied notebooks,
+reproduced their main results, and added parameter and robustness studies
+where they were useful.  The visible autograders pass: 13/13 and 12/12 for the
+cart-pole notebooks, 13/13 for the hopper, 16/16 for the two footstep
+planners, and 70/70, 50/50 and 50/50 for the manipulation exercises.  The
+report gives the steps behind these numbers, the plots that show the behaviour,
+and the code that produced them.  The less obvious cases---saturation,
+non-minimum-phase zeros, the narrow compass-gait basin, and the partial
+stability of the SLIP apex map---are discussed with the numerical evidence
+rather than only stated as conclusions.
 \end{abstract}
 
 \tableofcontents
@@ -111,6 +114,34 @@ Ch.~1 Introduction (Manipulation) &
 \end{tabular}
 \end{table}
 
+\begin{table}[htbp]
+\centering
+\small
+\caption{Coverage of the assignment items and where the corresponding code and
+results can be found.}
+\setlength{\tabcolsep}{4pt}\begin{tabular}{>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.11\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}}
+\toprule
+Assignment item & Section & Code / notebook & Main result \\
+\midrule
+Example 3.1 & \S2.1 & \texttt{exp1\_analysis.py}, \texttt{Exp3'1-acrobot.ipynb} & 98\% / 63\% \\
+Example 3.2 & \S2.2 & \texttt{cp\_analysis.py}, \texttt{Exp3'2-cartpole.ipynb} & 100\% / 36\% \\
+Example 3.5 & \S2.3 & \texttt{lqr\_comparison.py} & conditions, zeros, LQR \\
+Example 3.6 & \S2.4 & \texttt{quadrotor\_analysis.py} & settles in 1.08 s \\
+Section 3.8 & \S2.5 & \texttt{cartpole\_balancing.ipynb}, \texttt{cartpoles\_urdf.ipynb} & 13/13, 12/12 \\
+Example 4.3 & \S3.1 & \texttt{rimless\_wheel\_analysis.py} & fixed point \(\omega^\star\) \\
+Example 4.4 & \S3.2 & \texttt{compass\_gait\_analysis.py} & 14 steps / 0.735 s \\
+Examples 4.5--4.6 & \S3.3 & \texttt{slip\_analysis.py} & \(z^\star=0.8776\) m \\
+Section 4.6 & \S3.4 & \texttt{one\_d\_hopper\_analysis.py} & 13/13 \\
+Example 5.1 & \S4.1 & \texttt{zmp\_analysis.py} & 0.153 m \\
+Example 5.2 & \S4.2 & \texttt{littledog\_analysis.py} & 0.6875 s stride \\
+Section 5.8 & \S4.3 & \texttt{footstep\_analysis.py} & MIQP/GCS 16/16 \\
+Example 1.2 & \S5.1 & teleoperation notebook & 3D demo ran \\
+Example 1.3 & \S5.2 & this report & block diagrams \\
+Section 1.7 & \S5.3 & four notebooks & 70/50/50 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 The examples are the supplied demonstrations: the code is already written and
 the task is to run it, explain what is observed, and, where possible, study the
 effect of changing a parameter.  The exercise sections are solved from scratch;
@@ -128,7 +159,7 @@ visualizer from blocking on a browser connection.  The pinned
 YCB object in the manipulation chapter.
 
 The complete code accompanies the report as \texttt{Assignment\_1\_Code.zip}.
-The main files are listed in Appendix~\ref{app:code}.  For the reader who
+The files are listed in Appendix~\ref{app:code}.  For the reader who
 wants to reproduce a specific result, the appendix gives the exact commands.
 
 \section{Summary of results}
@@ -165,10 +196,10 @@ Ch.~1 & HardwareStation and Advanced Scenarios & 50/50 \\
 \chapter{Acrobots, Cart-Poles, and Quadrotors}
 %=====================================================================
 
-\section{The acrobot}
+\section{Example 3.1: Dynamics of the Acrobot}
 
 The acrobot is a two-link planar robot whose shoulder is passive and whose
-elbow is driven by a torque $u=\tau$.  With
+elbow is driven by a torque $u=\tau$ \cite{tedrake-acrobot}.  With
 $q=[\theta_1,\theta_2]^\top$ and
 $\bx=[\theta_1,\theta_2,\dot\theta_1,\dot\theta_2]^\top$, the manipulator
 equations are
@@ -193,9 +224,10 @@ $\mathcal C=[\bB,\bA\bB,\bA^2\bB,\bA^3\bB]$ has rank four, so the linearised
 system is controllable even though the robot is underactuated.  The singular
 values of $\mathcal C$ are $[511.7,123.1,0.0807,0.0715]$; the ratio between
 the largest and the smallest is about $7\times10^3$, which indicates that some
-directions are only weakly controllable.  This is the first recurring theme
-of the assignment: underactuation is not the same as uncontrollability, and
-rank alone does not say how hard a direction is to drive.
+directions are only weakly controllable.  The rank is four, but the smallest singular value is only
+\(1.4	imes10^{-4}\) of the largest.  In the simulation this appeared as a
+large initial elbow motion; the shoulder moved only after the elbow had built
+up momentum.
 
 With $Q=\operatorname{diag}(10,10,1,1)$ and $R=1$, the LQR gain is
 \[
@@ -211,9 +243,10 @@ elbow first moves away from the target before the whole robot returns.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.78\textwidth]{ch3_acrobot_success.png}
-\caption{Acrobot: a successful and a failed closed-loop trajectory with the
-$\pm10$~N\,m saturation.  The successful case illustrates the
-non-minimum-phase undershoot.}
+\caption{Acrobot with the $\pm10$~N\,m saturation.  The green run starts with a
+0.05~rad shoulder error; the red run also has a 0.03~rad elbow error and
+saturates.  The elbow moves away from zero before the shoulder returns, which
+is the non-minimum-phase undershoot.}
 \end{figure}
 
 Two parameters are especially important.  Increasing the distal mass $m_2$
@@ -225,7 +258,7 @@ poles impose a finite gain even in the expensive-control limit.  In practice,
 the acrobot needs a swing-up phase to enter the LQR region, and the actuator
 limit must be included in the assessment.
 
-\section{The cart-pole}
+\section{Example 3.2: Dynamics of the Cart-Pole}
 
 The cart-pole has state $\bx=[x,\theta,\dot x,\dot\theta]^\top$ and input
 $u=F_x$.  For the model used in the notebook, $m_c=10$~kg, $m_p=1$~kg and
@@ -262,9 +295,10 @@ larger control authority.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.72\textwidth]{ch3_cartpole_force.png}
-\caption{Cart-pole: success rate as a function of the force limit at a
-disturbance scale $\delta=0.1$.  The pole itself is easy to balance without a
-limit; the actuator constraint is the limiting factor.}
+\caption{Cart-pole success rate versus force limit at $\delta=0.1$.  At 20~N the
+pole still balances in 90\% of trials; at 10~N the rate is 64\%, and at 5~N
+only 36\%.  Without a limit the pole is easy; the actuator is the binding
+constraint.}
 \end{figure}
 
 The cart mass is the most important physical parameter.  From 2 to 20~kg the
@@ -273,7 +307,7 @@ falls from 100\% to 68\%; the pole itself remains balanceable.  Increasing
 $R$ saves force but slows the cart-return mode: for $R=100$ the slow pole is
 about $-0.12$~rad/s, so a 5~s simulation is too short for the cart to return.
 
-\section{LQR comparison}
+\section{Example 3.5: LQR for the Acrobot and Cart-Pole}
 
 The acrobot and the cart-pole are useful together because they have the same
 control structure but different modal properties.  Both are controllable and
@@ -288,13 +322,14 @@ return on the cart-pole.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.88\textwidth]{ch3_lqr_linear.png}
-\caption{Normalised controllability singular values and transmission zeros
-for the acrobot and the cart-pole.  Both systems are controllable; the
-acrobot is much more weakly controllable, and both have right-half-plane
-zeros.}
+\caption{Normalised controllability singular values and transmission zeros.
+The acrobot's smallest normalized singular value is about
+\(1.4\times10^{-4}\); the cart-pole's is about \(2.1\times10^{-2}\).  Both have
+right-half-plane zeros: the acrobot at $+2.05$ and $+2.28$, the cart-pole at
+$+4.43$.}
 \end{figure}
 
-\section{The quadrotor}
+\section{Example 3.6: LQR for Quadrotors}
 
 The planar quadrotor has state
 $\bx=[x,z,\theta,\dot x,\dot z,\dot\theta]^\top$ and two thrust inputs.  At
@@ -319,9 +354,9 @@ for all tested values up to 0.7~rad.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.95\textwidth]{ch3_quad_sensitivity.png}
-\caption{Planar quadrotor sensitivity: position weight, $R$, constant wind and
-initial tilt.  The wind case shows the steady-state offset of a controller
-without integral action.}
+\caption{Planar quadrotor sensitivity.  With 0.25~N wind the steady-state offset
+is 0.073~m; with 2~N it is 0.554~m.  The other panels show the expected
+$Q/R$ trade-off.}
 \end{figure}
 
 The 3D quadrotor has four thrust inputs and six degrees of freedom.  It is
@@ -332,7 +367,7 @@ stabilising controller and our LQR both return to hover in about 1.08~s with a
 peak thrust near 3~N.  The sensitivity to $Q$, $R$ and initial tilt follows
 the same pattern as in the planar case.
 
-\section{Section 3.8 exercises}
+\section{Section 3.8: Exercises 3.1--3.4}
 
 \subsection{Exercise 3.1: linearisation and balancing}
 
@@ -378,8 +413,9 @@ predicts.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{ch3_cartpole_closed_loop.png}
-\caption{Closed-loop angle histories for the six initial states of Exercise
-3.1.  Only cases 0, 1, 2 and 5 converge to the upright position.}
+\caption{Closed-loop angle histories for the six initial states of Exercise~3.1.
+Cases 3 ($\theta=\pi/2$) and 4 ($\theta=0$) leave the upright region; the
+linear controller was designed for the tangent at $\pi$.}
 \end{figure}
 
 \subsection{Exercise 3.2: cart-pole URDFs}
@@ -416,9 +452,9 @@ autograder gives 12/12.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{ch3_double_balancing.png}
-\caption{Double-pendulum cart-pole under LQR.  The cart is still returning to
-the origin at the end of the 5~s window, which is consistent with the slow
-pair of poles.}
+\caption{Double-pendulum cart-pole under LQR.  The angle errors at 5~s are 0.014
+and 0.0007~rad, but the cart is still moving; the slow pair of poles has a
+time constant of about 1.3~s.}
 \end{figure}
 
 \subsection{Exercise 3.3: controllability}
@@ -442,8 +478,9 @@ One step is not enough in general because it fixes $x_1[1]=i_1+j_1$.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.95\textwidth]{ch3_grid.png}
-\caption{Edges of the discrete double integrator for $u=-1,0,+1$.  Destinations
-outside the truncated grid are drawn dashed.}
+\caption{Edges of the discrete double integrator for $u=-1,0,+1$.  The source
+nodes are solid; destinations outside the $3\times3$ grid are dashed.  The
+two-step construction $s_{0,0}\to(0,i)\to(i,j)$ is the path used in the text.}
 \label{fig:grid}
 \end{figure}
 
@@ -486,28 +523,42 @@ pendulum.
 \centering
 \includegraphics[width=0.9\textwidth]{ch3_phase_up.png}
 \caption{Phase portraits around the upright equilibrium for $b=0$ (top) and
-$b=1$ (bottom).  The saddle structure survives damping.}
+$b=1$ (bottom).  The stable manifold separates initial conditions that fall
+left from those that fall right; damping does not remove the saddle.}
 \end{figure}
 
-\section{Summary}
+\section{Implementation notes}
 
-The acrobot, cart-pole and quadrotor illustrate the same sequence: a nonlinear
-underactuated model, a local linearisation, a controllability check, and LQR.
-The main practical lessons are the difference between rank and weak
-controllability, the role of non-minimum-phase zeros, and the strong effect of
-actuator saturation.  The Section~3.8 exercises make the same points concrete:
-the linear model is local, the URDF frames must be handled carefully, the
-discrete reachability argument is simple but exact, and the stability table is
-a good example of when linearisation is and is not enough.
+I ran the three example notebooks and the two exercise notebooks in the
+environment described in the introduction.  The Monte-Carlo studies use fixed
+seeds and 100 trials; the force and torque limits are stated with each table.
+The acrobot and cart-pole parameters are the defaults from Drake and the
+\texttt{underactuated} package.  For the quadrotor, the planar notebook was run
+headlessly and the 3D notebook uses the official stabilising controller; the
+sensitivity numbers come from \texttt{quadrotor\_analysis.py}.  The supplied
+controller equations were not changed; the additional code is logging and the
+loop over random initial conditions.
+
+\section{Discussion}
+
+The three examples share a workflow, but they fail in different ways.  The
+acrobot and cart-pole are limited by saturation and by the non-minimum-phase
+undershoot; the quadrotor is limited by the absence of integral action under a
+constant wind.  The Section~3.8 exercises show that the linear model is local:
+at $\theta=\pi/2$ the linearisation error is already larger than the field
+itself.  A natural next step would be a swing-up controller for the acrobot and
+cart-pole and an integral or MPC layer for the cart and quadrotor.  These are
+outside the scope of this assignment, but they explain why the local LQR
+results should not be read as global controllers.
 
 %=====================================================================
 \chapter{Simple Models of Walking and Running}
 %=====================================================================
 
-\section{The rimless wheel}
+\section{Example 4.3: The Rimless Wheel}
 
 The rimless wheel has $n=8$ spokes, no rim, a point mass at the hip, radius
-$l=1$ and slope $\gamma$.  During stance it behaves as a simple pendulum,
+$l=1$ and slope $\gamma$ \cite{tedrake-simplelegs}.  During stance it behaves as a simple pendulum,
 \[
 \ddot\theta=\frac{g}{l}\sin\theta,
 \]
@@ -532,18 +583,20 @@ it lies above the step threshold.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.72\textwidth]{ch4_rimless_return.png}
-\caption{Rimless wheel return map for three slopes.  The filled points are
-valid rolling fixed points.}
+\caption{Rimless-wheel return map for three slopes.  Only slopes above about
+0.067~rad have a fixed point above the step threshold; at 0.05~rad the wheel
+cannot complete a step.}
 \end{figure}
 
 The slope study gives a clear threshold.  At $\gamma=0.02$ and $0.05$ the
 fixed point is below $\omega_1$ and the wheel cannot sustain a rolling gait;
 at $0.08$, $0.12$ and $0.20$ the fixed point is valid.  The multiplier is
 $1/2$ in all cases, so the stability of the rolling gait is independent of the
-slope once the fixed point exists.  This is a clean example of a limit cycle
-created by the balance between gravity input and impact dissipation.
+slope once the fixed point exists.  The fixed point exists only where the gravity input per step can replace the
+kinetic energy lost at impact; below that slope the map has no valid fixed
+point.
 
-\section{The compass gait}
+\section{Example 4.4: The Compass Gait}
 
 The compass gait has two point-mass legs of mass $m=5$~kg and length $l=1$~m
 ($a=b=0.5$~m), and a hip of mass $m_h=10$~kg.  The state is
@@ -565,7 +618,8 @@ demonstration, but not a robust walking controller.
 \centering
 \includegraphics[width=0.85\textwidth]{ch4_compass_phase.png}
 \caption{Compass gait: phase portrait and step-to-step map.  The step points
-converge to a fixed point.}
+converge to the fixed point after the initial transient; perturbations outside
+the narrow basin fall.}
 \end{figure}
 
 The contrast with the rimless wheel is instructive.  The wheel has many spokes
@@ -574,7 +628,7 @@ solution.  The compass gait has only two legs, so the swing-leg landing must
 match the previous step closely.  The energy balance can still produce a limit
 cycle, but the basin is much smaller.
 
-\section{SLIP}
+\section{Examples 4.5 and 4.6: SLIP and the Apex-to-Apex Map}
 
 The spring-loaded inverted pendulum models running with a point mass, a
 massless spring leg and a touchdown angle that is reset during flight.  In
@@ -588,8 +642,8 @@ The mechanical energy
 \[
 E=\frac12m(\dot r^2+r^2\dot\theta^2)+mgr\cos\theta+\frac12k(r_0-r)^2
 \]
-is conserved because the leg and foot are massless.  This is the main
-difference from the walking models, which lose energy at impact.
+is conserved because the leg and foot are massless.  Unlike the walking models, there is no impact loss; the spring stores and
+returns the energy.
 
 At the apex the vertical velocity is zero, and energy conservation makes the
 horizontal velocity a function of the apex height.  The return map is
@@ -603,8 +657,8 @@ interpolation.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{ch4_slip_map.png}
-\caption{SLIP apex-to-apex map.  Left: fixed touchdown angle and varying
-energy.  Right: fixed energy and varying touchdown angle.  Filled points are
+\caption{SLIP apex-to-apex map.  The stable fixed point is at 0.8776~m with
+$P'=0.42$; the unstable one is at 0.9163~m with $P'=1.29$.  Filled points are
 stable fixed points.}
 \end{figure}
 
@@ -617,7 +671,7 @@ and pushes change the energy and are outside the map; this is the partial
 stability discussed in the notes.  The apex map is useful for one-step
 controllers, but a real robot still needs energy regulation.
 
-\section{The one-dimensional hopper}
+\section{Section 4.6: The One-Dimensional Hopper}
 
 The hopper has a body $m_b$, a leg $m_l$, a spring $k$ and a preload
 $\delta\ge0$.  The state is $[z_b,l,\dot z_b,\dot l]$.  The controller changes
@@ -639,8 +693,9 @@ controller uses $\bar\delta=0$.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{ch4_hopper_energy.png}
-\caption{Hopper energy and preload for $h=1$~m.  The energy drops at the two
-impacts and is restored by the preload at the bottom.}
+\caption{Hopper energy and preload for $h=1$~m.  The two energy drops are the
+touchdown and lift-off impacts; the preload pulses at the bottom restore the
+energy.}
 \end{figure}
 
 The controller is implemented as a \texttt{LeafSystem} that detects the bottom
@@ -652,23 +707,36 @@ from the energy balance.  The controller is also insensitive to the initial
 body height: starting from $z_b(0)=0.1$ to 1.0~m, the steady hopping height is
 the same.
 
-\section{Summary}
+\section{Implementation notes}
 
-The walking and running chapter moves from passive dynamical walking to a
-controlled hopper.  The rimless wheel and the compass gait show how gravity and
-impact losses can produce a stable limit cycle; the compass gait also shows
-how narrow the basin can be.  SLIP shows the opposite limit: a conservative
-model with a one-dimensional apex map and only partial stability.  The hopper
-ends the chapter with a controller that uses the energy analysis directly and
-passes the autograder.
+I used the supplied rimless-wheel, compass-gait and SLIP notebooks and
+implemented the hopper controller.  Steps in the compass gait are detected from
+the plant's ``left support'' state; the rimless return map is computed from the
+formula in the notebook; the SLIP map uses the notebook's
+\texttt{SpringLoadedInvertedPendulum}.  The hopper controller computes the
+preload at the bottom and resets it at the apex; the autograder gives 13/13.
+For the hopper sensitivity, each run is 8~s and the last 2~s are used for the
+height statistics.
+
+\section{Discussion}
+
+The passive walkers and SLIP illustrate two different stability mechanisms.
+The rimless wheel and the compass gait rely on impact dissipation, and their
+basins are set by the collision geometry; the compass gait's basin is much
+narrower because it has only two legs.  SLIP has no impact loss, so the apex
+map is conservative and the stability is only partial.  The hopper adds a
+controller that restores the lost energy.  A limitation of these models
+is the idealisation: point masses, no foot slip, no ground compliance, and, for
+the hopper, one-dimensional motion.  A real robot would need a more detailed
+contact model and a controller that handles terrain variation.
 
 %=====================================================================
 \chapter{Highly-articulated Legged Robots}
 %=====================================================================
 
-\section{The ZMP planner}
+\section{Example 5.1: The ZMP Planner}
 
-The first example is the ZMP planner for a humanoid.  The model is the linear
+The first example is the ZMP planner for a humanoid \cite{tedrake-humanoids}.  The model is the linear
 inverted pendulum, with the centre of mass at height $z_c$ and the zero-moment
 point (ZMP) as the control point.  In the notebook the ZMP is tracked by a
 linear controller; the nominal plan is a sequence of foot placements and a
@@ -682,31 +750,33 @@ to move the CoM between supports.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{ch5_zmp_plan.png}
-\caption{ZMP planner: CoM and ZMP trajectories for the nominal footstep plan.}
+\caption{ZMP planner: CoM and ZMP trajectories for the nominal footstep plan.
+The default weights give a ZMP tracking error of 0.153~m; after a velocity push
+the feedback run returns to \(1.5\times10^{-5}\)~m.}
 \end{figure}
 
-\section{LittleDog gait optimization}
+\section{Example 5.2: LittleDog Gait Optimization}
 
 The second example optimises a walking gait for the LittleDog model.  The
 decision variables are the gait timing and the contact schedule; the
 constraints come from the centroidal dynamics and the foot geometry.  The
 notebook uses SNOPT.  In the executed version the optimisation converges and
 gives a stride period of about 0.6875~s and a CoM height between 0.131 and
-0.148~m.  The result is a periodic gait with alternating support phases.  The
-main lesson is that a legged robot's gait can be treated as an optimisation
-problem over contacts, not only as a feedback-control problem.
+0.148~m.  The result is a periodic gait with alternating support phases.  The gait is therefore an optimisation problem over contacts; the feedback
+controller only tracks the resulting trajectory.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{ch5_littledog.png}
-\caption{LittleDog gait: optimized contact schedule and body trajectory.}
+\caption{LittleDog gait: optimized contact schedule and body trajectory.  The
+stride is 0.6875~s and the CoM height varies between 0.131 and 0.148~m.}
 \end{figure}
 
-\section{Section 5.8 exercises}
+\section{Section 5.8: Exercises 5.1--5.3}
 
 The section contains three exercises.
 
-\paragraph{Footstep planning via MIQP.}
+\subsection{Exercise 5.1: Footstep Planning via MIQP}
 The terrain and the footstep sequence are encoded with binary variables.  The
 constraints enforce that each foot is assigned to one stepping stone, that the
 relative foot positions are feasible, and that the chosen footholds are inside
@@ -714,16 +784,16 @@ the terrain.  The objective is the sum of the step lengths.  On the two
 benchmark terrains the MIQP finds costs 4.1593 and 5.6721 and passes the
 autograder 16/16.
 
-\paragraph{Understanding the zero-moment point.}
+\subsection{Exercise 5.2: Understanding the Zero-Moment Point}
 This is an analytic exercise.  It derives the ZMP for a free-body diagram,
 first without an ankle actuator and then with an ideal ankle actuator, and uses
-the result to discuss foot design.  The key point is that the ZMP is a
-property of the contact wrench and the CoM acceleration, not simply the centre
-of pressure; the ankle torque shifts the ZMP inside the foot.  The exercise
+the result to discuss foot design.  The ZMP is determined by the contact wrench and the CoM acceleration, not
+simply by the centre of pressure; the ankle torque shifts it inside the support
+polygon.  The exercise
 also shows the range of motion of the actuated ankle for a given CoM
 trajectory (about $76^\circ$ to $99^\circ$ in the numerical example).
 
-\paragraph{Footstep planning via GCS.}
+\subsection{Exercise 5.3: Footstep Planning via GCS}
 The GCS formulation represents the terrain as a graph of convex sets.  The
 shortest path in the graph is found with a mixed-integer or convex
 optimisation, and the result is a sequence of convex regions.  The GCS
@@ -742,17 +812,30 @@ small problems.
 \includegraphics[width=\textwidth]{ch5_gcs.png}
 \caption{GCS footstep plan.}
 \end{subfigure}
-\caption{Section 5.8: footstep plans on the benchmark terrains.}
+\caption{Section 5.8 footstep plans on the benchmark terrains.  The MIQP costs
+are 4.159 and 5.672 for terrains A and B; the GCS plans use 10 edges.}
 \end{figure}
 
-\section{Summary}
+\section{Implementation notes}
 
-The chapter connects trajectory planning with the dynamics of a legged robot.
-The ZMP planner gives a simple, interpretable CoM/ZMP reference; the LittleDog
-example shows how gait timing and contacts can be optimised; and the Section
-5.8 exercises formulate footstep planning as MIQP and GCS.  The two
-formulations solve the same class of problems with different modelling
-trade-offs.
+I ran the ZMP and LittleDog notebooks and the two footstep-planning notebooks.
+The LittleDog notebook's default SNOPT iteration limit was too small for the
+gait to converge, so the major iteration limit was raised to 100; the reported
+stride is 0.6875~s.  The MIQP and GCS exercises use the benchmark terrains in
+the notebooks and pass 16/16 each.  The ZMP exercise is analytic; the numerical
+values come from \texttt{zmp\_exercise\_analysis.py}.
+
+\section{Discussion}
+
+The ZMP planner, the LittleDog optimisation and the footstep planners address
+different levels of the same problem.  The ZMP planner gives a CoM reference
+but assumes a fixed contact sequence; the LittleDog optimisation chooses the
+timing and contacts for a periodic gait; MIQP and GCS choose discrete
+footholds.  The MIQP is direct but scales poorly with the number of steps; GCS
+uses a convex decomposition and scales better, at the cost of a more structured
+model.  The costs are sensitive to the solver settings and to the terrain
+discretisation, so they should be read as benchmark values rather than
+universal performance numbers.
 
 %=====================================================================
 \part{Manipulation}
@@ -762,9 +845,9 @@ trade-offs.
 \chapter{Introduction to Manipulation and Drake}
 %=====================================================================
 
-\section{Teleoperation in 2D and 3D}
+\section{Examples 1.1 and 1.2: Teleoperation in 2D and 3D}
 
-The Manipulation introduction starts with teleoperation.  The notebook builds
+The Manipulation introduction starts with teleoperation \cite{manipulation-intro}.  The notebook builds
 a HardwareStation with an IIWA14 and a WSG gripper, adds a differential
 inverse-kinematics block and connects a set of pose sliders.  The data flow is
 simple: the sliders provide a desired end-effector pose, differential IK
@@ -783,14 +866,19 @@ the joint command, and the measured pose is fed back to the sliders.
   \draw[->] (ik)--(station);
   \draw[->] (station.south) -- ++(0,-0.8) -| (sliders.south);
 \end{tikzpicture}
-\caption{Teleoperation data flow: sliders, differential IK, and the station.
-The measured end-effector pose is fed back to the sliders.}
+\caption{Teleoperation data flow.  The sliders command a full pose, diff-IK
+converts it to joint positions, and the measured pose is fed back.}
 \end{figure}
+
+\subsection{Background: Example 1.1 -- Teleoperation in 2D}
 
 The 2D example restricts the visible task to roll, $x$ and $z$; the planar
 IIWA14 has three actuated joints, so the task and the arm are matched in the
-nominal configuration.  The 3D example uses the full 7-DoF IIWA14 and a 6-DoF
-pose slider.  The arm is now redundant: many joint configurations produce the
+nominal configuration.
+
+\subsection{Example 1.2: Teleoperation in 3D}
+
+The 3D example uses the full 7-DoF IIWA14 and a 6-DoF pose slider.  The arm is now redundant: many joint configurations produce the
 same end-effector pose, and differential IK chooses the one closest to the
 current configuration.  In both cases the sliders and the gripper button are
 the operator interface; the controller and the plant are hidden behind the
@@ -806,7 +894,7 @@ solver reports \texttt{stuck} instead of producing a discontinuous jump.  The
 3D demo also shows the limitation of purely kinematic teleoperation: the
 clutter is not avoided, because obstacle avoidance is a separate layer.
 
-\section{System diagrams}
+\section{Example 1.3: System Diagrams}
 
 The System Diagrams example makes the modelling paradigm explicit.  A
 manipulation system is a \texttt{Diagram} of smaller systems, each with its own
@@ -828,8 +916,9 @@ complexity inside a single box.
   \draw[->] (ctrl)--(station);
   \draw[->] (station)--(vis);
 \end{tikzpicture}
-\caption{A system diagram in the spirit of Example~1.3.  The station is itself
-a nested diagram; the controller and visualizer are separate systems.}
+\caption{A system diagram in the spirit of Example~1.3.  The station is a nested
+diagram; expanding the IIWA controller shows the position controller and model
+driver inside.}
 \end{figure}
 
 The benefit of the block-diagram approach is composability: a controller,
@@ -840,12 +929,12 @@ planning, control and simulation, the structure is what keeps the parts
 interchangeable.  The HardwareStation scenario used in Exercise~1.4 is a
 declarative description of the same idea.
 
-\section{Section 1.7 exercises}
+\section{Section 1.7: Exercises 1.1--1.4}
 
 \paragraph{Exercise 1.1: Familiarize yourself with Drake.}
 The three documentation questions have short answers:
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
-  \item In the \texttt{dynamical\_systems} tutorial the initial condition of
+  \item In the \texttt{dynamical\_systems} tutorial \cite{drake-tutorials} the initial condition of
         \texttt{SimpleContinuousTimeSystem} is set to $x(0)=0.9$.
   \item In the C++ doxygen page on spatial vectors, angular acceleration is
         written \texttt{alpha}; angular velocity is \texttt{w}, torque is
@@ -869,7 +958,8 @@ $\theta(1.8)=-0.1074$~rad.  The autograder gives 70/70.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{ch1_pendulum.png}
-\caption{Inverted-pendulum simulations for the two verification conditions.}
+\caption{Inverted-pendulum simulations for the two verification conditions.  The
+final angles are 0.0052 and $-0.1074$~rad, matching the autograder.}
 \end{figure}
 
 \paragraph{Exercise 1.3: Physics Simulation and Robot Loading.}
@@ -894,8 +984,9 @@ does not compensate gravity.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{ch1_iiwa.png}
-\caption{Joint positions of the IIWA14 under the proportional controller in
-the verification condition.}
+\caption{Joint positions of the IIWA14 under the proportional controller.  The
+residuals are below 0.06~rad; the P controller does not compensate gravity, so
+a small steady-state offset remains.}
 \end{figure}
 
 \paragraph{Exercise 1.4: HardwareStation and Advanced Scenarios.}
@@ -932,13 +1023,26 @@ directives:
         translation: [0.5, 0.0, -0.05]
 \end{lstlisting}
 
-\section{Summary}
+\section{Implementation notes}
 
-The manipulation introduction shows the software side of the course: a custom
-Drake system, a differential-IK teleoperation stack, a physics scene with a
-real robot and custom assets, and a declarative HardwareStation scenario.  The
-system diagrams tie these pieces together.  The exercises are graded and pass,
-and the teleoperation examples were run in both 2D and 3D.
+I used the pinned \texttt{drake\_models} package for the IIWA14, the WSG
+gripper and the YCB object.  The package was not present in the initial
+environment; after it was placed in the local Drake cache, all notebooks ran
+with \texttt{package://drake\_models}.  The teleoperation notebook was run with
+\texttt{COLAB\_TESTING=1}; the 2D and 3D functions were simulated for 0.1~s.
+The exercise notebooks use the official model and the local table/letter
+assets, and the autograders give 70/70, 50/50 and 50/50.
+
+\section{Discussion}
+
+The teleoperation stack is deliberately local: differential IK tracks a pose,
+but it does not avoid obstacles and it can get stuck near singularities.  The
+System Diagrams example explains why the stack is organised as a diagram rather
+than a single script; the HardwareStation scenario makes the same structure
+declarative.  The P controller in Exercise~1.3 is also intentionally simple and
+leaves a gravity-induced steady-state error.  For a real manipulation system,
+the next steps would be a trajectory planner, a collision-aware IK or MPC
+layer, and a gravity-compensating controller.
 
 %=====================================================================
 \chapter{Conclusions}
@@ -952,29 +1056,51 @@ a finite basin for the acrobot and cart-pole; impact losses and a narrow basin
 for the compass gait; energy conservation and partial stability for SLIP; and
 contact planning for the legged robots.
 
-The main conclusions are:
-\begin{itemize}[leftmargin=1.4em]
-  \item Underactuation and controllability are different questions.  The
-        acrobot, the cart-pole and the quadrotor are all underactuated, yet
-        their linearisations are controllable.  The singular values and the
-        nonlinear simulations show how hard the weakly controllable
-        directions are to use.
-  \item LQR is a local tool.  The closed-loop eigenvalues guarantee local
-        exponential stability, but the basin of attraction and the effect of
-        saturation must be studied separately.  The acrobot and cart-pole
-        examples show this clearly.
-  \item Hybrid systems require a different object: a limit cycle and a
-        step-to-step or apex-to-apex map.  The rimless wheel and the compass
-        gait use impact maps; SLIP uses an energy slice.  In the conservative
-        SLIP case the stability is only partial.
-  \item Planning and control are complementary.  The hopper controller uses an
-        energy calculation; the legged-robot chapter uses ZMP planning,
-        MIQP and GCS.  The right representation depends on the task.
-  \item The software stack matters.  Drake's systems framework, URDF/SDF
-        assets, differential IK and HardwareStation make it possible to move
-        from a model to a simulation quickly, and the autograders provide a
-        reproducible check.
-\end{itemize}
+The most consistent lesson is that underactuation and controllability answer
+different questions.  The acrobot, cart-pole and quadrotor are all
+underactuated, yet their linearisations are controllable.  What changes from
+one system to the next is how much input authority is available in each
+direction, and the singular values and nonlinear simulations show that this
+difference can be the difference between a comfortable recovery and a
+saturated failure.
+
+A second observation is that LQR is a local tool.  The closed-loop eigenvalues
+give local exponential stability, but they say little about the basin of
+attraction or about what happens when the actuator saturates.  The acrobot and
+cart-pole runs make this concrete: the same controller that recovers from a
+small perturbation fails from a larger one or from a different direction.
+
+The hybrid systems in Chapter~4 require a different object.  The limit cycle
+and its return map replace the fixed point and the Jacobian.  Impact maps are
+dissipative and can produce a stable gait, but the basin can be narrow; a
+conservative model such as SLIP gives a one-dimensional apex map and only
+partial stability.  The hopper controller is a good example of using the energy
+balance directly instead of trying to track a trajectory.
+
+Finally, planning and control are complementary.  The ZMP planner, the
+LittleDog optimisation, MIQP and GCS all choose a contact sequence or a
+reference trajectory; the feedback controller only tracks it.  The software
+stack---Drake diagrams, URDF/SDF assets, differential IK and
+HardwareStation---is what makes it possible to move between these levels
+without rewriting the whole system.
+
+\begin{thebibliography}{9}
+\bibitem{tedrake-acrobot} R. Tedrake, \emph{Underactuated Robotics}, Chapter 3:
+Acrobots, Cart-Poles, and Quadrotors. \url{https://underactuated.csail.mit.edu/acrobot.html}
+\bibitem{tedrake-simplelegs} R. Tedrake, \emph{Underactuated Robotics}, Chapter 4:
+Simple Models of Walking and Running. \url{https://underactuated.csail.mit.edu/simple_legs.html}
+\bibitem{tedrake-humanoids} R. Tedrake, \emph{Underactuated Robotics}, Chapter 5:
+Highly-articulated Legged Robots. \url{https://underactuated.csail.mit.edu/humanoids.html}
+\bibitem{manipulation-intro} R. Tedrake, \emph{Robotic Manipulation}, Chapter 1:
+Introduction. \url{https://manipulation.csail.mit.edu/intro.html}
+\bibitem{drake-tutorials} Drake tutorials, including the dynamical systems and
+authoring leaf systems tutorials, and the C++ doxygen page on spatial vectors.
+\url{https://github.com/RobotLocomotion/drake/tree/master/tutorials},
+\url{https://drake.mit.edu/doxygen_cxx/group__multibody__spatial__vectors.html}
+\bibitem{lectures} Course lectures: 6.8210 Lecture 5 (Acrobots, cart-poles and
+quadrotors), 6.832 Lecture 15 (Simple models of walking), 6.8210 Lecture 16
+(Humanoid robots), and 6.4210 Lecture 1 (Introduction to manipulation).
+\end{thebibliography}
 
 %=====================================================================
 \appendix
@@ -1003,8 +1129,10 @@ COLAB_TESTING=1 /Users/leo/venvs/drake/bin/jupyter nbconvert \
   --to notebook --execute --inplace --ExecutePreprocessor.timeout=300 \
   <notebook>.ipynb
 \end{lstlisting}
+\begin{sloppypar}
 and the reports are compiled with \texttt{pdflatex} run twice.  The combined
 code is in \texttt{Assignment\_1\_Code.zip}.
+\end{sloppypar}
 
 \section{Selected code}
 
@@ -1043,6 +1171,78 @@ def get_delta_bar(self, state):
     zb = state[0]
     return (0.5 * zb + mb * g / k
             - ((mb + ml) ** 2) * g * self.h / (k * mb * zb))
+\end{lstlisting}
+
+\paragraph{Cart-pole LQR wiring (Chapter 3).}
+\begin{lstlisting}[language=Python]
+def cartpole_balancing(cartpole_urdf, x_star, Q, R):
+    builder = DiagramBuilder()
+    plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=0.0)
+    Parser(plant).AddModelsFromString(cartpole_urdf, "urdf")
+    plant.Finalize()
+    plant.set_name("cartpole")
+
+    context = plant.CreateDefaultContext()
+    context.get_mutable_continuous_state_vector().SetFromVector(x_star)
+    plant.get_actuation_input_port().FixValue(context, [0])
+    input_i = plant.get_actuation_input_port().get_index()
+
+    lqr = LinearQuadraticRegulator(
+        plant, context, Q, R, input_port_index=input_i)
+    lqr = builder.AddSystem(lqr)
+    builder.Connect(plant.get_state_output_port(), lqr.get_input_port(0))
+    builder.Connect(lqr.get_output_port(0),
+                    plant.get_actuation_input_port())
+    return builder.Build()
+\end{lstlisting}
+
+\paragraph{Inverted pendulum system (Chapter 1).}
+\begin{lstlisting}[language=Python]
+class InvertedPendulum(LeafSystem):
+    def __init__(self, mass=1.0, length=1.0, gravity=9.81):
+        LeafSystem.__init__(self)
+        self.mass, self.length, self.gravity = mass, length, gravity
+        self.DeclareContinuousState(2)
+        self.torque_port = self.DeclareVectorInputPort("torque", 1)
+        self.DeclareVectorOutputPort("theta", 1, self.OutputTheta)
+
+    def DoCalcTimeDerivatives(self, context, derivatives):
+        x = context.get_continuous_state_vector()
+        theta, theta_dot = x[0], x[1]
+        torque = self.torque_port.Eval(context)[0]
+        theta_ddot = -self.gravity * np.sin(theta) + torque / (
+            self.mass * self.length**2)
+        derivatives.get_mutable_vector().SetFromVector(
+            [theta_dot, theta_ddot])
+
+    def OutputTheta(self, context, output):
+        output.SetFromVector([context.get_continuous_state_vector()[0]])
+\end{lstlisting}
+
+\paragraph{Hopper controller logic (Chapter 4).}
+\begin{lstlisting}[language=Python]
+def is_bottom_or_apex(self, state):
+    if np.any(np.isnan(self.last_state)):
+        return None
+    zb, l, zb_dot, l_dot = state
+    last_zb_dot = self.last_state[2]
+    if last_zb_dot <= 0.0 and zb_dot > 0.0:
+        return "bottom" if zb < 0.0 else "apex"
+    if last_zb_dot >= 0.0 and zb_dot < 0.0:
+        return "apex" if zb > 0.0 else "bottom"
+    return None
+
+def DoCalcVectorOutput(self, context, delta):
+    state = self.get_input_port(0).Eval(context)
+    event = self.is_bottom_or_apex(state)
+    if event == "bottom":
+        delta.SetFromVector([max(self.get_delta_bar(state), 0.0)])
+    elif event == "apex":
+        delta.SetFromVector([0.0])
+    else:
+        delta.SetFromVector([self.last_delta])
+    self.last_delta = delta[0]
+    self.last_state = np.array(state)
 \end{lstlisting}
 
 \paragraph{HardwareStation scenario.}
