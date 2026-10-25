@@ -58,8 +58,8 @@ Underactuated Robotics and Manipulation\\[4pt]
 \large Acrobots, Cart-Poles, Quadrotors, Walking Models,\\
 Legged Robots, and an Introduction to Manipulation}
 \author{Zihao Liu\\[2pt]
-Student ID: 220261979\\[2pt]
-\texttt{213222647@seu.edu.cn}}
+Student ID: 261979\\[2pt]
+\texttt{220261979@seu.edu.cn}}
 \date{October 2026}
 
 \begin{document}
@@ -113,13 +113,13 @@ summarised in Table~\ref{tab:scope}.
 Textbook chapter & Examples & Exercise section \\
 \midrule
 Ch.~3 Acrobots, Cart-Poles, and Quadrotors &
-3.1, 3.2, 3.5, 3.6 & Section 3.8, Exercises 3.1--3.4 \\
+Examples 3.1, 3.2, 3.5, 3.6 & Section 3.8, Exercises 3.1--3.4 \\
 Ch.~4 Simple Models of Walking and Running &
-4.3, 4.4, 4.5, 4.6 & Section 4.6, one-dimensional hopper \\
+Examples 4.3, 4.4, 4.5, 4.6 & Section 4.6, Exercise 4.1 (One-Dimensional Hopper) \\
 Ch.~5 Highly-articulated Legged Robots &
-5.1, 5.2 & Section 5.8, three exercises \\
+Examples 5.1, 5.2 & Section 5.8, Exercises 5.1--5.3 \\
 Ch.~1 Introduction (Manipulation) &
-1.2, 1.3 & Section 1.7, Exercises 1.1--1.4 \\
+Examples 1.2, 1.3 & Section 1.7, Exercises 1.1--1.4 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -183,7 +183,7 @@ Example 4.6 Numerical SLIP apex-to-apex map
   & \texttt{exp4\_analysis/slip\_analysis.py};
     \texttt{Exp4'5-6-slip.ipynb}
   & unstable \(z_u=0.9163\)~m, \(P'=1.288\) \\
-Section 4.6 Exercise: One-Dimensional Hopper
+Section 4.6 Exercise 4.1 (One-Dimensional Hopper)
   & \S\ref{sec:s46}
   & \texttt{exp4\_analysis/one\_d\_hopper\_analysis.py};
     \texttt{Exp4'6-one\_d\_hopper.ipynb}
@@ -474,7 +474,7 @@ the same pattern as in the planar case.
 \section{Section 3.8: Exercises 3.1--3.4}
 \label{sec:s38}
 
-\subsection{Exercise 3.1: linearisation and balancing}
+\subsection{Exercise 3.1: Cart-Pole: Linearization and Balancing}
 
 For the cart-pole with $m_c=m_p=l=1$ and $g=9.81$, the equations used in the
 notebook are
@@ -554,7 +554,7 @@ Cases 3 ($\theta=\pi/2$) and 4 ($\theta=0$) leave the upright region; the
 linear controller was designed for the tangent at $\pi$.}
 \end{figure}
 
-\subsection{Exercise 3.2: cart-pole URDFs}
+\subsection{Exercise 3.2: Cart-Poles: Writing URDFs and balancing with LQR}
 
 The single pendulum URDF has a base of mass 1 at the origin, a pendulum whose
 ball of mass 1 is at $z=-1$, a spherical visual of radius 0.05 and a
@@ -631,7 +631,7 @@ and 0.0007~rad, but the cart is still moving; the slow pair of poles has a
 time constant of about 1.3~s.}
 \end{figure}
 
-\subsection{Exercise 3.3: controllability}
+\subsection{Exercise 3.3: Controllability of Discrete and Continuous LTI Systems}
 
 The discrete double integrator
 \[
@@ -669,7 +669,7 @@ $(\bA_3,\bB_3)$ is fully actuated (one degree of freedom, one input), while
 $(\bA_4,\bB_4)$ is underactuated ($q=[x,\theta]$, only $x$ actuated).  This
 again separates controllability from full actuation.
 
-\subsection{Exercise 3.4: stability and linearisation}
+\subsection{Exercise 3.4: Comparison between stability of nonlinear system and linearization}
 
 For the pendulum with $m=l=1$ and damping $b$,
 \[
@@ -922,7 +922,7 @@ and pushes change the energy and are outside the map; this is the partial
 stability discussed in the notes.  The apex map is useful for one-step
 controllers, but a real robot still needs energy regulation.
 
-\section{Section 4.6: The One-Dimensional Hopper}
+\section{Section 4.6: Exercise 4.1, One-Dimensional Hopper}
 \label{sec:s46}
 
 The hopper has a body $m_b$, a leg $m_l$, a spring $k$ and a preload
@@ -1152,7 +1152,7 @@ into convex regions, and the problem becomes a shortest path through a graph
 of convex sets.  Both formulations use the same reachability and foot-geometry
 constraints; they differ in how the discrete choice is represented.
 
-\subsection{Exercise 5.1: Footstep Planning via MIQP}
+\subsection{Exercise 5.1: Footstep Planning via Mixed-Integer Optimization}
 
 The MIQP has three groups of decision variables for a plan with $N$ steps:
 \begin{itemize}[leftmargin=1.4em,itemsep=1pt]
@@ -1203,7 +1203,7 @@ polygon.  The exercise
 also shows the range of motion of the actuated ankle for a given CoM
 trajectory (about $76^\circ$ to $99^\circ$ in the numerical example).
 
-\subsection{Exercise 5.3: Footstep Planning via GCS}
+\subsection{Exercise 5.3: Footstep Planning via Graph of Convex Sets (GCS)}
 
 The GCS formulation keeps the same geometry but replaces the binaries by graph
 structure.  Each stepping stone $i$ becomes a convex vertex $H_i=\{\mathbf x:
@@ -1419,7 +1419,7 @@ declarative description of the same idea.
 \section{Section 1.7: Exercises 1.1--1.4}
 \label{sec:s17}
 
-\paragraph{Exercise 1.1: Familiarize yourself with Drake.}
+\subsection{Exercise 1.1: Familiarize yourself with Drake}
 The three documentation questions have short answers:
 \begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
   \item In the \texttt{dynamical\_systems} tutorial \cite{drake-tutorials} the initial condition of
@@ -1434,7 +1434,7 @@ The three documentation questions have short answers:
         deliberately uses the larger tolerance.
 \end{enumerate}
 
-\paragraph{Exercise 1.2: Drake Systems Fundamentals.}
+\subsection{Exercise 1.2: Drake Systems Fundamentals}
 The exercise implements an inverted pendulum as a \texttt{LeafSystem} with
 state $[\theta,\dot\theta]$, a torque input and an angle output.  The dynamics
 are $\ddot\theta=-g\sin\theta+\tau/(ml^2)$; for the default $m=l=1$ this is
@@ -1450,7 +1450,7 @@ $\theta(1.8)=-0.1074$~rad.  The autograder gives 70/70.
 final angles are 0.0052 and $-0.1074$~rad, matching the autograder.}
 \end{figure}
 
-\paragraph{Exercise 1.3: Physics Simulation and Robot Loading.}
+\subsection{Exercise 1.3: Physics Simulation and Robot Loading}
 The exercise loads a 7-DoF IIWA14 with \texttt{Parser} and
 \texttt{MultibodyPlant}, welds the base, and adds a simple proportional
 controller as a \texttt{LeafSystem}.  The controller declares one input port of
@@ -1487,7 +1487,7 @@ residuals are below 0.06~rad; the P controller does not compensate gravity, so
 a small steady-state offset remains.}
 \end{figure}
 
-\paragraph{Exercise 1.4: HardwareStation and Advanced Scenarios.}
+\subsection{Exercise 1.4: HardwareStation and Advanced Scenarios}
 This exercise replaces the manual wiring with a HardwareStation and a YAML
 scenario.  The scenario contains two IIWA14 robots, a local table, three
 letters and a free YCB object.  The station is added to a diagram and
