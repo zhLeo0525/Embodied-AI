@@ -34,6 +34,7 @@
 \fancyhead[R]{\small\leftmark}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 
 \lstset{
   basicstyle=\ttfamily\small,
@@ -145,7 +146,7 @@ Example 3.2 Dynamics of the Cart-Pole System
   & \S\ref{sec:ex32}
   & \texttt{exp3\_2\_analysis/cp\_analysis.py};
     \texttt{Exp3'2-cartpole.ipynb}
-  & 100\% unlimited, 36\% at 5~N \\
+  & 100\% unlimited, 40\% at 5~N \\
 Example 3.5 LQR for Acrobot and Cart-Pole
   & \S\ref{sec:ex35}
   & \texttt{exp3\_5\_analysis/lqr\_comparison.py};
@@ -193,7 +194,7 @@ Example 5.1 The ZMP Planner
   & \S\ref{sec:ex51}
   & \texttt{exp5\_analysis/example51\_zmp.py};
     \texttt{Exp5'1-zmp-planner.ipynb}
-  & tracking error 0.153~m \(\to 1.5\times10^{-5}\)~m \\
+  & worst ZMP error 0.158~m; \(1.2\times10^{-6}\)~m after push \\
 Example 5.2 LittleDog Gait Optimization
   & \S\ref{sec:ex52}
   & \texttt{exp5\_analysis/littledog\_analysis.py};
@@ -285,6 +286,7 @@ Ch.~1 & HardwareStation and Advanced Scenarios & 50/50 \\
 %=====================================================================
 \chapter[Underactuated Ch.~3: Acrobots, Cart-Poles, and Quadrotors]%
         {Underactuated Ch.~3: Acrobots, Cart-Poles, and Quadrotors}
+\chaptermark{Ch.~3: Acrobots, Cart-Poles, Quadrotors}
 %=====================================================================
 
 This chapter covers Examples~3.1, 3.2, 3.5 and 3.6 and Section~3.8 of
@@ -357,7 +359,44 @@ grows from 5~N\,m to more than 300~N\,m.  Changing $R$ from 1 to 100 reduces
 the peak torque only from 11.2 to 9.7~N\,m, because the unstable open-loop
 poles impose a finite gain even in the expensive-control limit.  In practice,
 the acrobot needs a swing-up phase to enter the LQR region, and the actuator
-limit must be included in the assessment.
+limit must be included in the assessment.  Table~\ref{tab:acrobot-sens}
+collects the two sweeps so that the trend can be read without going through
+the plots.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Acrobot sensitivity.  (a) Distal mass; (b) control weight.  All rows
+use 100 trials, the same initial-condition distribution and the $\pm10$~N\,m
+torque limit.  ``Peak torque'' is the median over trials of the maximum
+commanded torque.}
+\label{tab:acrobot-sens}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\multicolumn{5}{@{}l}{\emph{(a) distal mass \(m_2\)}}\\
+\(m_2\) (kg) & \(\operatorname{cond}(\mathcal C)\) & \(\sigma_{\min}\) &
+success & peak torque (N\,m) \\
+\midrule
+0.5 & 1\,521 & 0.207 & 98\% & 5.1 \\
+1.0 & 7\,154 & 0.072 & 63\% & 11.2 \\
+2.0 & 42\,405 & 0.022 & 35\% & 47.8 \\
+4.0 & 289\,092 & 0.006 & 10\% & 317.0 \\
+\bottomrule
+\end{tabular}
+
+\vspace{6pt}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\multicolumn{3}{@{}l}{\emph{(b) control weight \(R\) (\(m_2=1\)~kg)}}\\
+\(R\) & success & peak torque (N\,m) \\
+\midrule
+0.1 & 65\% & 19.8 \\
+1   & 63\% & 11.2 \\
+10  & 62\% & 9.85 \\
+100 & 62\% & 9.70 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Example 3.2: Dynamics of the Cart-Pole System}
 \label{sec:ex32}
@@ -390,24 +429,84 @@ the cart returning to the origin.  The original notebook does not limit the
 force, and a 100-trial study with $\bx_0=\bx^\star+0.1\,\mathcal N(0,I_4)$
 balances the pole in 100\% of the trials.  The median peak force is about
 17~N, with a 90th percentile near 40~N.  When the force is limited, the
-picture changes: 20~N gives 90\% pole-balancing success, 5~N gives 36\%, and
-2~N fails in most trials because the non-minimum-phase recovery needs a
-larger control authority.
+picture changes: at 20~N the full state still returns in 89\% of the trials
+(96\% for the pole alone), at 10~N the full-state rate is 63\%, at 5~N it is
+40\%, and at 2~N it falls to 12\% because the non-minimum-phase recovery needs
+a larger control authority.  The individual rows are in
+Table~\ref{tab:cartpole-force}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.72\textwidth]{ch3_cartpole_force.png}
 \caption{Cart-pole success rate versus force limit at $\delta=0.1$.  At 20~N the
-pole still balances in 90\% of trials; at 10~N the rate is 64\%, and at 5~N
-only 36\%.  Without a limit the pole is easy; the actuator is the binding
-constraint.}
+full state returns in 89\% of trials (96\% for the pole alone); at 10~N the
+rates are 63\% and 64\%, and at 5~N they are 40\% and 42\%.  Without a limit the
+pole is easy; the actuator is the binding constraint.}
 \end{figure}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Cart-pole success versus force limit at $\delta=0.1$ (100 trials per
+row).  ``Pole'' counts trials with $|\theta-\pi|<0.1$~rad; ``full'' also
+requires the cart to return within the position tolerance.  The last column is
+the median peak commanded force.}
+\label{tab:cartpole-force}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\(F_{\max}\) (N) & pole (\%) & full state (\%) & peak \(|u|\) (N) \\
+\midrule
+2  & 27 & 12 & 128.7 \\
+5  & 42 & 40 & 69.1 \\
+10 & 64 & 63 & 17.2 \\
+20 & 96 & 89 & 17.2 \\
+50 & 100 & 98 & 17.2 \\
+$\infty$ & 100 & 98 & 17.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 The cart mass is the most important physical parameter.  From 2 to 20~kg the
 median peak force grows from about 5 to 32~N, and the full-state success rate
 falls from 100\% to 68\%; the pole itself remains balanceable.  Increasing
 $R$ saves force but slows the cart-return mode: for $R=100$ the slow pole is
 about $-0.12$~rad/s, so a 5~s simulation is too short for the cart to return.
+Table~\ref{tab:cartpole-param} shows both sweeps; the success column in panel
+(b) is the reason $R$ cannot be increased without bound.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Cart-pole parameter sensitivity (100 trials per row).
+(a) Cart mass with \(R=1\).  (b) Control weight with \(m_c=10\)~kg.
+Peak force is the median maximum commanded force.}
+\label{tab:cartpole-param}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\multicolumn{4}{@{}l}{\emph{(a) cart mass}}\\
+\(m_c\) (kg) & \(\operatorname{cond}(\mathcal C)\) & success & peak force (N) \\
+\midrule
+2  & 90.9 & 100\% & 5.1 \\
+5  & 57.0 & 100\% & 9.8 \\
+10 & 47.7 & 98\%  & 17.2 \\
+20 & 43.4 & 68\%  & 31.6 \\
+\bottomrule
+\end{tabular}
+
+\vspace{6pt}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\multicolumn{3}{@{}l}{\emph{(b) control weight \(R\) (\(m_c=10\)~kg)}}\\
+\(R\) & success & peak force (N) \\
+\midrule
+0.01 & 100\% & 25.5 \\
+0.1  & 100\% & 19.6 \\
+1    & 98\%  & 17.2 \\
+10   & 55\%  & 16.1 \\
+100  & 37\%  & 15.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Example 3.5: LQR for the Acrobot and Cart-Pole}
 \label{sec:ex35}
@@ -462,6 +561,83 @@ for all tested values up to 0.7~rad.
 is 0.073~m; with 2~N it is 0.554~m.  The other panels show the expected
 $Q/R$ trade-off.}
 \end{figure}
+
+Tables~\ref{tab:quad-weights} and~\ref{tab:quad-dist} give the numbers behind
+the figure.  The weight sweep is monotone in the expected direction: more
+position weight gives a faster response and a larger peak thrust, while more
+control weight does the opposite.  The wind rows are the interesting ones
+because every one of them fails the settling test: the offset is not a transient
+but a new equilibrium, which is the signature of a controller with no integral
+action.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Planar quadrotor weight sensitivity, starting from a 0.2~rad tilt.
+(a) Position weight \(Q_{\rm pos}=wI_2\) with \(R=I_2\).
+(b) Control weight \(R=rI_2\) with the nominal $Q$.}
+\label{tab:quad-weights}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\multicolumn{3}{@{}l}{\emph{(a) position weight \(w\)}}\\
+\(w\) & settling time (s) & peak thrust (N) \\
+\midrule
+0.1 & 0.088 & 3.99 \\
+0.5 & 0.070 & 4.62 \\
+1   & 0.061 & 5.17 \\
+2   & 0.053 & 5.99 \\
+10  & 0.034 & 9.57 \\
+\bottomrule
+\end{tabular}
+
+\vspace{6pt}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\multicolumn{3}{@{}l}{\emph{(b) control weight \(r\)}}\\
+\(r\) & settling time (s) & peak thrust (N) \\
+\midrule
+0.01 & 0.055 & 29.0 \\
+0.1  & 0.056 & 10.9 \\
+1    & 0.061 & 5.17 \\
+10   & 0.262 & 3.34 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Planar quadrotor disturbance sensitivity.  (a) Constant horizontal
+wind; the final position offset is the steady-state error.  (b) Initial tilt;
+all rows recover.}
+\label{tab:quad-dist}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\multicolumn{2}{@{}l}{\emph{(a) constant wind}}\\
+wind (N) & final offset (m) \\
+\midrule
+0.25 & 0.073 \\
+0.50 & 0.145 \\
+1.00 & 0.288 \\
+2.00 & 0.554 \\
+\bottomrule
+\end{tabular}
+
+\vspace{6pt}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\multicolumn{3}{@{}l}{\emph{(b) initial tilt}}\\
+tilt (rad) & settling time (s) & peak thrust (N) \\
+\midrule
+0.05 & 0.000 & 3.08 \\
+0.10 & 0.040 & 3.77 \\
+0.20 & 0.061 & 5.17 \\
+0.30 & 0.276 & 6.56 \\
+0.50 & 0.397 & 9.34 \\
+0.70 & 0.698 & 12.12 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 The 3D quadrotor has four thrust inputs and six degrees of freedom.  It is
 underactuated, but the hover equilibrium is stabilisable.  The LQR is
@@ -752,7 +928,7 @@ The parameter study points to the distal mass and the actuator limit as the two
 quantities that decide success.  Increasing $m_2$ from 0.5 to 4~kg reduces the
 minimum controllability singular value by a factor of 35 and the success rate
 from 98\% to 10\%; lowering the cart force limit from 20 to 5~N reduces the
-success rate from 90\% to 36\%.  A next step would be a swing-up controller for
+success rate from 89\% to 40\%.  A next step would be a swing-up controller for
 the acrobot and cart-pole (energy-based, as in the textbook), followed by an
 LQR that respects the saturation, for example by a receding-horizon controller
 with input constraints.  An integral term or a disturbance observer would
@@ -793,6 +969,7 @@ $(\bA_1,\bB_1)$ fails both: $x_1$ is not reached by $u$ at all.
 %=====================================================================
 \chapter[Underactuated Ch.~4: Simple Models of Walking and Running]%
         {Underactuated Ch.~4: Simple Models of Walking and Running}
+\chaptermark{Ch.~4: Walking and Running}
 %=====================================================================
 
 This chapter covers Examples~4.3--4.6 and Section~4.6 of
@@ -843,7 +1020,29 @@ at $0.08$, $0.12$ and $0.20$ the fixed point is valid.  The multiplier is
 $1/2$ in all cases, so the stability of the rolling gait is independent of the
 slope once the fixed point exists.  The fixed point exists only where the gravity input per step can replace the
 kinetic energy lost at impact; below that slope the map has no valid fixed
-point.
+point.  Table~\ref{tab:rimless-slope} lists the five slopes, including the
+comparison $\omega^\star$ versus $\omega_1$ that decides validity.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Rimless-wheel slope sweep.  A rolling gait exists only when
+$\omega^\star>\omega_1$; the multiplier is $\cos^2(2\alpha)=1/2$ in every valid
+row.}
+\label{tab:rimless-slope}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+$\gamma$ (rad) & $\omega_1$ (rad/s) & $\omega^\star$ (rad/s) &
+valid? & multiplier \\
+\midrule
+0.02 & 1.161 & 0.548 & no  & -- \\
+0.05 & 1.068 & 0.866 & no  & -- \\
+0.08 & 0.975 & 1.095 & yes & 0.500 \\
+0.12 & 0.851 & 1.341 & yes & 0.500 \\
+0.20 & 0.603 & 1.727 & yes & 0.500 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Example 4.4: Numerical simulation of the compass gait}
 \label{sec:ex44}
@@ -876,7 +1075,28 @@ The contrast with the rimless wheel is instructive.  The wheel has many spokes
 and a collision geometry that naturally returns the state to the rolling
 solution.  The compass gait has only two legs, so the swing-leg landing must
 match the previous step closely.  The energy balance can still produce a limit
-cycle, but the basin is much smaller.
+cycle, but the basin is much smaller.  Table~\ref{tab:compass-slope} shows how
+quickly the basin collapses as the slope increases.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Compass-gait slope sweep, $3\times3$ grid of initial states at each
+slope.  ``Success'' means a sustained gait for the full simulation.  The
+nominal slope is 0.0525~rad; the period is the mean over successful runs.}
+\label{tab:compass-slope}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+$\gamma$ (rad) & successful runs & success fraction & mean period (s) \\
+\midrule
+0.020 & 3/9 & 33\% & 0.705 \\
+0.035 & 3/9 & 33\% & 0.715 \\
+0.052 & 3/9 & 33\% & 0.730 \\
+0.080 & 0/9 & 0\%  & -- \\
+0.120 & 0/9 & 0\%  & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Examples 4.5 and 4.6: SLIP simulation and the apex-to-apex map}
 \label{sec:ex45}
@@ -915,12 +1135,34 @@ stable fixed points.}
 
 The sensitivity study shows a narrow operating window.  At $30^\circ$ a stable
 fixed point exists for $\tilde E=1.60,1.61,1.65$; changing the touchdown angle
-to $28^\circ$ or $32^\circ$ removes the fixed point in the scanned range.  The
-one-dimensional map is obtained on a constant-energy slice, so $|P'|<1$ proves
+to $28^\circ$ or $32^\circ$ removes the fixed point in the scanned range.
+Table~\ref{tab:slip-energy} lists the fixed points and their derivatives; in
+every row the stable point is the lower one and the unstable point is the upper
+one, so the map has the usual fold structure.  The one-dimensional map is
+obtained on a constant-energy slice, so $|P'|<1$ proves
 stability only for perturbations that preserve the energy.  Terrain changes
 and pushes change the energy and are outside the map; this is the partial
 stability discussed in the notes.  The apex map is useful for one-step
 controllers, but a real robot still needs energy regulation.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{SLIP apex-to-apex map at $\theta_{td}=30^\circ$ for three energies.
+Each energy has one stable and one unstable fixed point; the textbook values
+for $\tilde E=1.61$ are 0.8768/0.9168 with $P'=0.488/1.346$.}
+\label{tab:slip-energy}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+$\tilde E$ & stable $z^\star$ (m) & $P'(z^\star)$ &
+unstable $z_u$ (m) & $P'(z_u)$ \\
+\midrule
+1.60 & 0.8850 & 0.500 & 0.9019 & 1.167 \\
+1.61 & 0.8776 & 0.420 & 0.9163 & 1.288 \\
+1.65 & 0.8719 & 0.122 & 0.9586 & 1.513 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Section 4.6: Exercise 4.1, One-Dimensional Hopper}
 \label{sec:s46}
@@ -1006,7 +1248,45 @@ height is within 6~mm of the target for $h=0.5,0.75,1.0,1.25,1.5$~m.  The
 maximum preload grows from about 0.024 to 0.302~m over this range, as expected
 from the energy balance.  The controller is also insensitive to the initial
 body height: starting from $z_b(0)=0.1$ to 1.0~m, the steady hopping height is
-the same.
+the same.  Table~\ref{tab:hopper-sens} gives both sweeps: panel (a) shows that
+the achieved height tracks the target to a few millimetres and that the
+preload rises almost linearly with $h$; panel (b) shows that a lower start
+needs a larger first preload but converges to the same cycle.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Hopper sensitivity over 8~s runs, with statistics from the last 2~s.
+(a) Target height, starting from the matching body height.
+(b) Initial body height with $h=1$~m.}
+\label{tab:hopper-sens}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\multicolumn{4}{@{}l}{\emph{(a) target height}}\\
+$h$ (m) & achieved max (m) & error (mm) & max preload (m) \\
+\midrule
+0.50 & 0.4985 & $-1.5$ & 0.024 \\
+0.75 & 0.7475 & $-2.5$ & 0.093 \\
+1.00 & 0.9966 & $-3.4$ & 0.163 \\
+1.25 & 1.2437 & $-6.3$ & 0.232 \\
+1.50 & 1.4948 & $-5.2$ & 0.302 \\
+\bottomrule
+\end{tabular}
+
+\vspace{6pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\multicolumn{4}{@{}l}{\emph{(b) initial body height (\(h=1\)~m)}}\\
+$z_b(0)$ (m) & achieved max (m) & error (mm) & max preload (m) \\
+\midrule
+0.1 & 0.9966 & $-3.4$ & 0.403 \\
+0.3 & 0.9966 & $-3.4$ & 0.247 \\
+0.5 & 0.9966 & $-3.4$ & 0.163 \\
+0.8 & 0.9966 & $-3.4$ & 0.078 \\
+1.0 & 0.9966 & $-3.4$ & 0.037 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Implementation notes}
 
@@ -1092,6 +1372,7 @@ meaningless at the apex.
 %=====================================================================
 \chapter[Underactuated Ch.~5: Highly-articulated Legged Robots]%
         {Underactuated Ch.~5: Highly-articulated Legged Robots}
+\chaptermark{Ch.~5: Legged Robots}
 %=====================================================================
 
 This chapter covers Examples~5.1 and 5.2 and Section~5.8 of
@@ -1109,19 +1390,42 @@ inverted pendulum, with the centre of mass at height $z_c$ and the zero-moment
 point (ZMP) as the control point.  In the notebook the ZMP is tracked by a
 linear controller; the nominal plan is a sequence of foot placements and a
 reference ZMP.  The CoP identity is checked numerically and holds to machine
-precision.  With the default weights the ZMP tracking error is about 0.153~m;
-after a velocity push, the feedback policy reduces the final error to
-$1.5\times10^{-5}$~m.  The timing sensitivity study shows that the tracking
-error grows when the step timing is shortened, because the LIPM has less time
-to move the CoM between supports.
+precision.  With the default weights the worst instantaneous ZMP error is
+0.158~m and the RMS error is 0.078~m; after a velocity push, the feedback
+policy returns the CoM to within $1.2\times10^{-6}$~m of the nominal endpoint.
+The timing sweep in Table~\ref{tab:zmp-timing} shows the opposite trend from
+the one I first expected: the error is largest when single support is long
+(DS~0.2/SS~1.4, 0.204~m) and smallest when double support takes half the cycle
+(DS~1.0/SS~0.5, 0.095~m).  More double support gives the LIPM more time to move
+the CoM with both feet on the ground, which reduces the peak error.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{ch5_zmp_plan.png}
 \caption{ZMP planner: CoM and ZMP trajectories for the nominal footstep plan.
-The default weights give a ZMP tracking error of 0.153~m; after a velocity push
-the feedback run returns to \(1.5\times10^{-5}\)~m.}
+The default weights give a worst-case ZMP error of 0.158~m (RMS 0.078~m);
+after a velocity push the feedback run returns to within
+\(1.2\times10^{-6}\)~m of the nominal endpoint.}
 \end{figure}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{ZMP timing sensitivity.  Each row re-plans the CoM for the same
+footsteps with the stated double-support (DS) and single-support (SS)
+durations.  The nominal row is DS~0.5/SS~1.0.}
+\label{tab:zmp-timing}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+DS / SS (s) & duration (s) & max ZMP error (m) & RMS error (m) & final $x$ (m) \\
+\midrule
+0.2 / 1.4 & 9.4 & 0.204 & 0.098 & 2.501 \\
+0.5 / 1.0 & 8.5 & 0.158 & 0.078 & 2.490 \\
+1.0 / 0.5 & 8.0 & 0.095 & 0.047 & 2.466 \\
+1.0 / 1.0 & 11.0 & 0.101 & 0.052 & 2.496 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Example 5.2: LittleDog Gait Optimization}
 \label{sec:ex52}
@@ -1140,6 +1444,34 @@ controller only tracks the resulting trajectory.
 \caption{LittleDog gait: optimized contact schedule and body trajectory.  The
 stride is 0.6875~s and the CoM height varies between 0.131 and 0.148~m.}
 \end{figure}
+
+Table~\ref{tab:littledog} lists the metrics of the optimised gait.  The pitch
+and foot-clearance numbers are small, which is what a walking trot should look
+like; the uneven peak normal forces (front-left 43~N versus front-right 20~N)
+show that the optimiser did not enforce left--right symmetry.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{LittleDog optimised gait metrics (SNOPT, major-iteration limit 100).}
+\label{tab:littledog}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Quantity & Value \\
+\midrule
+Optimisation cost & 419.76 \\
+Solve time & 8.32~s \\
+Half / full stride duration & 0.344 / 0.6875~s \\
+Stride length & 0.25~m \\
+Effective speed & 0.364~m/s \\
+Total mass & 2.746~kg \\
+CoM height (min--max) & 0.131--0.148~m \\
+Max body pitch & 0.019~rad \\
+Max foot clearance & 0.012~m \\
+Peak normal force per foot & FL 43.4, FR 20.5, BL 24.2, BR 74.8~N \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Section 5.8: Exercises 5.1--5.3}
 \label{sec:s58}
@@ -1244,6 +1576,58 @@ pieces.
 are 4.159 and 5.672 for terrains A and B; the GCS plans use 10 edges.}
 \end{figure}
 
+Two sweeps make the trade-off concrete.  Table~\ref{tab:footstep-span} varies
+the step span on terrain~B: below 0.8~m the MIQP is infeasible, and above it
+the cost falls as the span grows because the planner stops making lateral
+detours (the 1.2~m and larger rows use \texttt{uses\_lateral = False}).
+Table~\ref{tab:footstep-scaling} adds bridge stones; the MIQP time grows from
+1.0 to 5.4~s while GCS grows from 0.21 to 0.74~s on the same instances.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Step-span sensitivity of the MIQP on terrain~B.  ``--'' means the
+problem is infeasible at that span.  Costs are the quadratic step-length
+objective, so they are not directly comparable across different stone sets.}
+\label{tab:footstep-span}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+span (m) & feasible & cost & steps & solve time (s) \\
+\midrule
+0.60 & no  & --    & -- & -- \\
+0.70 & no  & --    & -- & -- \\
+0.75 & no  & --    & -- & -- \\
+0.80 & yes & 5.672 & 8 & 0.61 \\
+0.90 & yes & 5.592 & 8 & 1.07 \\
+1.00 & yes & 5.409 & 8 & 1.36 \\
+1.10 & yes & 5.374 & 8 & 1.71 \\
+1.20 & yes & 4.187 & 8 & 0.84 \\
+1.30 & yes & 4.166 & 8 & 1.14 \\
+1.40 & yes & 4.032 & 8 & 0.34 \\
+1.50 & yes & 4.025 & 8 & 0.47 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Scaling with the number of bridge stones.  The same instances are
+solved by MIQP (branch and bound with OSQP) and GCS (convex relaxation with
+SNOPT for the rounded paths).}
+\label{tab:footstep-scaling}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+bridge stones & step limit & MIQP time (s) & MIQP cost &
+GCS time (s) & GCS edges \\
+\midrule
+4 & 9  & 1.04 & 3.635 & 0.21 & 7 \\
+6 & 11 & 2.10 & 4.905 & 0.53 & 10 \\
+8 & 13 & 5.38 & 6.167 & 0.74 & 11 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Implementation notes}
 
 I ran the ZMP and LittleDog notebooks and the two footstep-planning notebooks.
@@ -1310,7 +1694,7 @@ the optimiser to find a periodic trot rather than just track a prescribed one.
 an open-loop reference; the reported $1.5\times10^{-5}$~m is the error of the
 feedback simulation after the velocity push, in which the controller re-plans
 the CoM and the feet.  It is a statement about the closed loop, not about the
-open-loop plan, whose tracking error is 0.153~m.
+open-loop plan, whose worst-case ZMP error is 0.158~m.
 
 %=====================================================================
 \part{Manipulation}
@@ -1319,6 +1703,7 @@ open-loop plan, whose tracking error is 0.153~m.
 %=====================================================================
 \chapter[Manipulation Ch.~1: Introduction to Manipulation and Drake]%
         {Manipulation Ch.~1: Introduction to Manipulation and Drake}
+\chaptermark{Ch.~1: Manipulation and Drake}
 %=====================================================================
 
 This chapter covers Examples~1.1--1.3 and Section~1.7 of
