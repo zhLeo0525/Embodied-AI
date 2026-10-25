@@ -1675,30 +1675,40 @@ authoring leaf systems tutorials, and the C++ doxygen page on spatial vectors.
 \label{app:code}
 %=====================================================================
 
-The code is organised by chapter:
+The code is in \texttt{Assignment\_1\_Code.zip}.  Unzipping it creates one
+folder, \texttt{Assignment\_1\_Code/}, with the following layout (all paths
+below are relative to that folder):
 
 \begin{center}
-\begin{tabular}{ll}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.10\textwidth}>{\raggedright\arraybackslash}p{0.78\textwidth}}
 \toprule
-Chapter & Main files \\
+Chapter & Contents \\
 \midrule
-Ch.~3 & \texttt{Ch-3/Ch3\_Assignment\_Report/code/} \\
-Ch.~4 & \texttt{Ch-4/Ch4\_Assignment\_Report/code/} \\
-Ch.~5 & \texttt{Ch-5/Ch5\_Assignment\_Report/code/} \\
-Ch.~1 & \texttt{Ch-1/Ch1\_Assignment\_Report/code/} \\
+Ch.~3 & \texttt{Ch-3/Ch.3-examples/} (Examples 3.1, 3.2, 3.5, 3.6) and
+        \texttt{Ch-3/Ch.3 Exercises/} (Section 3.8) \\
+Ch.~4 & \texttt{Ch-4/} (Example notebooks) and \texttt{Ch-4/exp4\_analysis/} \\
+Ch.~5 & \texttt{Ch-5/Ch.5-examples/} and \texttt{Ch-5/exp5\_analysis/} \\
+Ch.~1 & \texttt{Ch-1/examples/}, \texttt{Ch-1/exercises/},
+        \texttt{Ch-1/models/} and \texttt{Ch-1/exp1\_analysis/} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
+Each analysis folder contains the result file (\texttt{results\_*.json} or
+\texttt{results.json}) used for the numbers in the text, so the tables can be
+checked without re-running the longer simulations.  The environment is
+described in \texttt{requirements.txt} at the root of the archive.
+
 The notebooks can be executed headlessly with
 \begin{lstlisting}[language=bash]
-COLAB_TESTING=1 /Users/leo/venvs/drake/bin/jupyter nbconvert \
+COLAB_TESTING=1 jupyter nbconvert \
   --to notebook --execute --inplace --ExecutePreprocessor.timeout=300 \
   <notebook>.ipynb
 \end{lstlisting}
 \begin{sloppypar}
-and the reports are compiled with \texttt{pdflatex} run twice.  The combined
-code is in \texttt{Assignment\_1\_Code.zip}.
+The \texttt{COLAB\_TESTING} switch is required: without it MeshCat waits for a
+browser connection.  The report is compiled with \texttt{pdflatex} run twice.
 \end{sloppypar}
 
 \section{Selected code}

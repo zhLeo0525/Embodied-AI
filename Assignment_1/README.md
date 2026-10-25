@@ -6,8 +6,8 @@ This folder contains the combined submission for Assignment 1.
 |---|---|
 | `Assignment_1_Report.pdf` | Unified 49-page report: introduction with coverage matrix, three underactuated chapters, one manipulation chapter, conclusions, references, appendix. Every chapter has numbered Example/Section headings, step-by-step derivations, implementation notes, a discussion of limitations, and answers to the notebook questions |
 | `Assignment_1_Report.tex` | LaTeX source of the unified report |
-| `Assignment_1_Code.zip` | Code from all four chapters |
-| `Assignment_1_Submission.zip` | Report PDF + code zip |
+| `Assignment_1_Code.zip` | All notebooks, analysis scripts, result JSONs and models from the four chapters; extracts to a single `Assignment_1_Code/` folder with its own README and `requirements.txt` |
+| `Assignment_1_Submission.zip` | Report PDF + LaTeX source + code zip + this README |
 
 Chapter order follows the assignment list:
 
