@@ -141,7 +141,7 @@ Example 3.1 Dynamics of the Acrobot
   & \texttt{exp1\_analysis/exp1\_analysis.py};
     \texttt{Exp3'1-acrobot.ipynb}
   & 98\% without, 63\% with \(\pm10\)~N\,m \\
-Example 3.2 Dynamics of the Cart-Pole
+Example 3.2 Dynamics of the Cart-Pole System
   & \S\ref{sec:ex32}
   & \texttt{exp3\_2\_analysis/cp\_analysis.py};
     \texttt{Exp3'2-cartpole.ipynb}
@@ -163,27 +163,27 @@ Section 3.8 Exercises 3.1--3.4
     \texttt{exercises\_analysis/ex3\_*.py}
   & 13/13 and 12/12 \\
 \midrule
-Example 4.3 The Rimless Wheel
+Example 4.3 Numerical simulation of the rimless wheel
   & \S\ref{sec:ex43}
   & \texttt{exp4\_analysis/rimless\_wheel\_analysis.py};
     \texttt{Exp4'3-rimless-wheel.ipynb}
   & multiplier \(\cos^2(2\alpha)=\tfrac12\) \\
-Example 4.4 The Compass Gait
+Example 4.4 Numerical simulation of the compass gait
   & \S\ref{sec:ex44}
   & \texttt{exp4\_analysis/compass\_gait\_analysis.py};
     \texttt{Exp4'4-compass-gait.ipynb}
   & 14 steps in 10~s, period 0.735~s \\
-Example 4.5 SLIP
+Example 4.5 Simulation of the SLIP model
   & \S\ref{sec:ex45}
   & \texttt{exp4\_analysis/slip\_analysis.py};
     \texttt{Exp4'5-6-slip.ipynb}
   & stable \(z^\star=0.8776\)~m, \(P'=0.420\) \\
-Example 4.6 Apex-to-Apex Map
+Example 4.6 Numerical SLIP apex-to-apex map
   & \S\ref{sec:ex45}
   & \texttt{exp4\_analysis/slip\_analysis.py};
     \texttt{Exp4'5-6-slip.ipynb}
   & unstable \(z_u=0.9163\)~m, \(P'=1.288\) \\
-Section 4.6 The One-Dimensional Hopper
+Section 4.6 Exercise: One-Dimensional Hopper
   & \S\ref{sec:s46}
   & \texttt{exp4\_analysis/one\_d\_hopper\_analysis.py};
     \texttt{Exp4'6-one\_d\_hopper.ipynb}
@@ -290,7 +290,8 @@ Ch.~1 & HardwareStation and Advanced Scenarios & 50/50 \\
 This chapter covers Examples~3.1, 3.2, 3.5 and 3.6 and Section~3.8 of
 \emph{Underactuated Robotics} \cite{tedrake-acrobot}.  The corresponding
 reading is \S3.1--3.2 (models and dynamics), \S3.4--3.5 (LQR, controllability
-and the PBH test) and \S3.8 (exercises).  The examples use the notebooks in
+and the PBH test) and \S3.8 (exercises), together with the course lecture
+\cite{lectures}.  The examples use the notebooks in
 \texttt{Ch-3/Ch.3-examples/}; the exercises are in
 \texttt{Ch-3/Ch.3 Exercises/}.
 
@@ -358,7 +359,7 @@ poles impose a finite gain even in the expensive-control limit.  In practice,
 the acrobot needs a swing-up phase to enter the LQR region, and the actuator
 limit must be included in the assessment.
 
-\section{Example 3.2: Dynamics of the Cart-Pole}
+\section{Example 3.2: Dynamics of the Cart-Pole System}
 \label{sec:ex32}
 
 The cart-pole has state $\bx=[x,\theta,\dot x,\dot\theta]^\top$ and input
@@ -796,12 +797,13 @@ $(\bA_1,\bB_1)$ fails both: $x_1$ is not reached by $u$ at all.
 
 This chapter covers Examples~4.3--4.6 and Section~4.6 of
 \emph{Underactuated Robotics} \cite{tedrake-simplelegs}.  The corresponding
-reading is \S4.4--4.6 (rimless wheel, compass gait, SLIP and the hopper); the
-return-map and energy arguments used below follow that text.  The notebooks are
+reading is \S4.4--4.6 (rimless wheel, compass gait, SLIP and the hopper),
+together with the course lecture \cite{lectures}; the return-map and energy
+arguments used below follow that text.  The notebooks are
 in \texttt{Ch-4/}; the analysis scripts and the numerical sweeps are in
 \texttt{Ch-4/exp4\_analysis/}.
 
-\section{Example 4.3: The Rimless Wheel}
+\section{Example 4.3: Numerical simulation of the rimless wheel}
 \label{sec:ex43}
 
 The rimless wheel has $n=8$ spokes, no rim, a point mass at the hip, radius
@@ -843,7 +845,7 @@ slope once the fixed point exists.  The fixed point exists only where the gravit
 kinetic energy lost at impact; below that slope the map has no valid fixed
 point.
 
-\section{Example 4.4: The Compass Gait}
+\section{Example 4.4: Numerical simulation of the compass gait}
 \label{sec:ex44}
 
 The compass gait has two point-mass legs of mass $m=5$~kg and length $l=1$~m
@@ -876,7 +878,7 @@ solution.  The compass gait has only two legs, so the swing-leg landing must
 match the previous step closely.  The energy balance can still produce a limit
 cycle, but the basin is much smaller.
 
-\section{Examples 4.5 and 4.6: SLIP and the Apex-to-Apex Map}
+\section{Examples 4.5 and 4.6: SLIP simulation and the apex-to-apex map}
 \label{sec:ex45}
 
 The spring-loaded inverted pendulum models running with a point mass, a
@@ -1095,8 +1097,8 @@ meaningless at the apex.
 This chapter covers Examples~5.1 and 5.2 and Section~5.8 of
 \emph{Underactuated Robotics} \cite{tedrake-humanoids}.  The corresponding
 reading is \S5.3 (ZMP and the linear inverted pendulum), the gait-optimisation
-section for LittleDog, and \S5.8 (footstep planning with MIQP and GCS).
-The notebooks are in \texttt{Ch-5/Ch.5-examples/}; the analysis scripts are in
+section for LittleDog, and \S5.8 (footstep planning with MIQP and GCS),
+together with the course lecture \cite{lectures}.  The notebooks are in \texttt{Ch-5/Ch.5-examples/}; the analysis scripts are in
 \texttt{Ch-5/exp5\_analysis/}.
 
 \section{Example 5.1: The ZMP Planner}
@@ -1322,7 +1324,7 @@ open-loop plan, whose tracking error is 0.153~m.
 This chapter covers Examples~1.1--1.3 and Section~1.7 of
 \emph{Robotic Manipulation} \cite{manipulation-intro}; the corresponding
 reading is \S1.1--1.4 (scope and simulation) and \S1.5--1.7 (Drake systems and
-exercises).  The notebooks are in
+exercises), together with the course lecture \cite{lectures}.  The notebooks are in
 \texttt{Ch-1/examples/} and \texttt{Ch-1/exercises/}.  Example~1.1 is included
 as background: the assignment lists Example~1.2 (3D teleoperation) and
 Example~1.3 (system diagrams), and the 2D version is the natural first step.
@@ -1638,20 +1640,33 @@ without rewriting the whole system.
 
 \begin{thebibliography}{9}
 \bibitem{tedrake-acrobot} R. Tedrake, \emph{Underactuated Robotics}, Chapter 3:
-Acrobots, Cart-Poles, and Quadrotors. \url{https://underactuated.csail.mit.edu/acrobot.html}
-\bibitem{tedrake-simplelegs} R. Tedrake, \emph{Underactuated Robotics}, Chapter 4:
-Simple Models of Walking and Running. \url{https://underactuated.csail.mit.edu/simple_legs.html}
-\bibitem{tedrake-humanoids} R. Tedrake, \emph{Underactuated Robotics}, Chapter 5:
-Highly-articulated Legged Robots. \url{https://underactuated.csail.mit.edu/humanoids.html}
-\bibitem{manipulation-intro} R. Tedrake, \emph{Robotic Manipulation}, Chapter 1:
-Introduction. \url{https://manipulation.csail.mit.edu/intro.html}
+Acrobots, Cart-Poles, and Quadrotors.  Assignments: Examples~3.1, 3.2, 3.5,
+3.6 and \S3.8.
+\url{https://underactuated.csail.mit.edu/acrobot.html#section8}
+\bibitem{tedrake-simplelegs} R. Tedrake, \emph{Underactuated Robotics},
+Chapter 4: Simple Models of Walking and Running.  Assignments:
+Examples~4.3--4.6 and \S4.6.
+\url{https://underactuated.csail.mit.edu/simple_legs.html#section6}
+\bibitem{tedrake-humanoids} R. Tedrake, \emph{Underactuated Robotics},
+Chapter 5: Highly-articulated Legged Robots.  Assignments: Examples~5.1--5.2
+and \S5.8.
+\url{https://underactuated.csail.mit.edu/humanoids.html#section8}
+\bibitem{manipulation-intro} R. Tedrake, \emph{Robotic Manipulation},
+Chapter 1: Introduction.  Assignments: Examples~1.2--1.3 and \S1.7.
+\url{https://manipulation.csail.mit.edu/intro.html#section7}
 \bibitem{drake-tutorials} Drake tutorials, including the dynamical systems and
 authoring leaf systems tutorials, and the C++ doxygen page on spatial vectors.
 \url{https://github.com/RobotLocomotion/drake/tree/master/tutorials},
 \url{https://drake.mit.edu/doxygen_cxx/group__multibody__spatial__vectors.html}
-\bibitem{lectures} Course lectures: 6.8210 Lecture 5 (Acrobots, cart-poles and
-quadrotors), 6.832 Lecture 15 (Simple models of walking), 6.8210 Lecture 16
-(Humanoid robots), and 6.4210 Lecture 1 (Introduction to manipulation).
+\bibitem{lectures} Course lectures:
+6.8210 Spring 2024 Lecture~5, ``Acrobots, Cart-poles, and Quadrotors I''
+\url{https://www.youtube.com/watch?v=UBPL0IbyJy4};
+6.832 Spring 2022 Lecture~15, ``Simple Models of Walking''
+\url{https://www.youtube.com/watch?v=N37FMfOioK0};
+6.8210 Spring 2024 Lecture~16, ``Humanoid Robots''
+\url{https://www.youtube.com/watch?v=cRu4EqBswbk};
+6.4210 Fall 2023 Lecture~1, ``Introduction: Anatomy of a Manipulation System''
+(course YouTube playlist).
 \end{thebibliography}
 
 %=====================================================================
