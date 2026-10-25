@@ -105,9 +105,9 @@ Assignment~1 covers four textbook chapters.  The first three belong to
 \emph{Robotic Manipulation}.  The required examples and exercise sections are
 summarised in Table~\ref{tab:scope}.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
-\caption{Assignment~1 scope.}
+\caption{\textbf{Assignment 1 scope.}}
 \label{tab:scope}
 \begin{tabular}{>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}}
 \toprule
@@ -125,10 +125,10 @@ Examples 1.2, 1.3 & Section 1.7, Exercises 1.1--1.4 \\
 \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \footnotesize
-\caption{Coverage of the assignment items: every required Example and Section,
+\caption{\textbf{Coverage of the assignment items.} Every required Example and Section,
 the report section that discusses it, the corresponding code, and the headline
 result.  Each row appears again as a numbered section heading in the body.}
 \label{tab:coverage}
@@ -259,9 +259,9 @@ Table~\ref{tab:results} collects the automatic grading results.  They are
 useful as a compact check that the code matches the expected behaviour; the
 discussion in the following chapters explains what the numbers mean.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
-\caption{Automatic grading results.}
+\caption{\textbf{Automatic grading results.}}
 \label{tab:results}
 \begin{tabular}{llc}
 \toprule
@@ -363,10 +363,10 @@ limit must be included in the assessment.  Table~\ref{tab:acrobot-sens}
 collects the two sweeps so that the trend can be read without going through
 the plots.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Acrobot sensitivity.  (a) Distal mass; (b) control weight.  All rows
+\caption{\textbf{Acrobot sensitivity.}  (a) Distal mass; (b) control weight.  All rows
 use 100 trials, the same initial-condition distribution and the $\pm10$~N\,m
 torque limit.  ``Peak torque'' is the median over trials of the maximum
 commanded torque.}
@@ -397,6 +397,16 @@ success & peak torque (N\,m) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Two different mechanisms are at work in Table~\ref{tab:acrobot-sens}.
+Increasing \(m_2\) changes the plant: the inertial coupling through the passive
+shoulder weakens, \(\operatorname{cond}(\mathcal C)\) grows by a factor of 190,
+and the actuator must supply 317~N\,m instead of 5~N\,m to recover the same
+perturbation.  Increasing \(R\) changes only the cost: the controller is less
+willing to use torque, but the gain cannot fall below what the unstable poles
+require, so the peak torque saturates at 9.7~N\,m and the success rate stays
+flat at about 62\%.  In both panels the success rate follows the peak torque
+against the \(\pm10\)~N\,m limit, not the condition number alone.
 
 \section{Example 3.2: Dynamics of the Cart-Pole System}
 \label{sec:ex32}
@@ -444,10 +454,10 @@ rates are 63\% and 64\%, and at 5~N they are 40\% and 42\%.  Without a limit the
 pole is easy; the actuator is the binding constraint.}
 \end{figure}
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Cart-pole success versus force limit at $\delta=0.1$ (100 trials per
+\caption{\textbf{Cart-pole force-limit sensitivity.}  Success versus force limit at $\delta=0.1$ (100 trials per
 row).  ``Pole'' counts trials with $|\theta-\pi|<0.1$~rad; ``full'' also
 requires the cart to return within the position tolerance.  The last column is
 the median peak commanded force.}
@@ -466,6 +476,14 @@ $\infty$ & 100 & 98 & 17.2 \\
 \end{tabular}
 \end{table}
 
+The peak-force column explains the shape of the curve.  Below 20~N the
+saturated controller cannot complete the initial reverse motion, the state
+diverges, and the recorded command grows to 69–158~N even though the applied
+force is capped; the 17.2~N row is the unconstrained peak.  The pole criterion
+is looser than the full-state criterion, which is why the two columns differ
+most at 2–5~N: the pole can still be caught while the cart is far from its
+tolerance.
+
 The cart mass is the most important physical parameter.  From 2 to 20~kg the
 median peak force grows from about 5 to 32~N, and the full-state success rate
 falls from 100\% to 68\%; the pole itself remains balanceable.  Increasing
@@ -474,10 +492,10 @@ about $-0.12$~rad/s, so a 5~s simulation is too short for the cart to return.
 Table~\ref{tab:cartpole-param} shows both sweeps; the success column in panel
 (b) is the reason $R$ cannot be increased without bound.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Cart-pole parameter sensitivity (100 trials per row).
+\caption{\textbf{Cart-pole parameter sensitivity.}  100 trials per row.
 (a) Cart mass with \(R=1\).  (b) Control weight with \(m_c=10\)~kg.
 Peak force is the median maximum commanded force.}
 \label{tab:cartpole-param}
@@ -507,6 +525,16 @@ Peak force is the median maximum commanded force.}
 \bottomrule
 \end{tabular}
 \end{table}
+
+Panel (a) of Table~\ref{tab:cartpole-param} is the clearest case where
+controllability and performance disagree.  A heavier cart lowers
+\(\operatorname{cond}(\mathcal C)\) from 90.9 to 43.4---the linear model is
+better conditioned---yet the success rate falls from 100\% to 68\%, because the
+force needed grows from 5.1 to 31.6~N.  The binding constraint is the
+actuator, not the rank.  Panel (b) shows the same effect from the cost side:
+going from \(R=1\) to \(R=100\) saves only 1.6~N of peak force but drops the
+success rate to 37\%, because the slow cart mode no longer returns within the
+5~s window.
 
 \section{Example 3.5: LQR for the Acrobot and Cart-Pole}
 \label{sec:ex35}
@@ -570,10 +598,10 @@ because every one of them fails the settling test: the offset is not a transient
 but a new equilibrium, which is the signature of a controller with no integral
 action.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Planar quadrotor weight sensitivity, starting from a 0.2~rad tilt.
+\caption{\textbf{Quadrotor weight sensitivity.}  Planar quadrotor starting from a 0.2~rad tilt.
 (a) Position weight \(Q_{\rm pos}=wI_2\) with \(R=I_2\).
 (b) Control weight \(R=rI_2\) with the nominal $Q$.}
 \label{tab:quad-weights}
@@ -604,10 +632,16 @@ action.
 \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
+The two panels are mirror images, as they should be: increasing \(w\) or
+decreasing \(r\) buys speed with thrust.  The nominal rows (\(w=1\) and \(r=1\))
+coincide at 0.061~s and 5.17~N because they are the same controller.  The
+practical reading is that \(r\) is the safer knob for a thrust-limited vehicle:
+it reduces the peak monotonically, whereas \(w\) increases it.
+
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Planar quadrotor disturbance sensitivity.  (a) Constant horizontal
+\caption{\textbf{Quadrotor disturbance sensitivity.}  Planar quadrotor.  (a) Constant horizontal
 wind; the final position offset is the steady-state error.  (b) Initial tilt;
 all rows recover.}
 \label{tab:quad-dist}
@@ -638,6 +672,13 @@ tilt (rad) & settling time (s) & peak thrust (N) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+The wind rows of Table~\ref{tab:quad-dist} are linear in the disturbance:
+0.073, 0.145, 0.288 and 0.554~m for 0.25, 0.5, 1 and 2~N, i.e.\ about
+0.277~m/N.  This is the static offset of a proportional controller and it does
+not decay, because the LQR has no integral state.  The tilt rows all settle,
+but the peak thrust rises from 3.08 to 12.12~N; at 0.7~rad the limit is
+actuator authority, not stability.
 
 The 3D quadrotor has four thrust inputs and six degrees of freedom.  It is
 underactuated, but the hover equilibrium is stabilisable.  The LQR is
@@ -1023,10 +1064,10 @@ kinetic energy lost at impact; below that slope the map has no valid fixed
 point.  Table~\ref{tab:rimless-slope} lists the five slopes, including the
 comparison $\omega^\star$ versus $\omega_1$ that decides validity.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Rimless-wheel slope sweep.  A rolling gait exists only when
+\caption{\textbf{Rimless-wheel slope sweep.}  A rolling gait exists only when
 $\omega^\star>\omega_1$; the multiplier is $\cos^2(2\alpha)=1/2$ in every valid
 row.}
 \label{tab:rimless-slope}
@@ -1043,6 +1084,12 @@ valid? & multiplier \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+The validity boundary in Table~\ref{tab:rimless-slope} is where
+\(\omega^\star=\omega_1\), between 0.05 and 0.08~rad.  The multiplier is exactly
+\(1/2\) on every valid slope, so the approach to the rolling solution is equally
+fast; what changes with the slope is whether a solution exists at all, not how
+quickly it is reached.
 
 \section{Example 4.4: Numerical simulation of the compass gait}
 \label{sec:ex44}
@@ -1078,10 +1125,10 @@ match the previous step closely.  The energy balance can still produce a limit
 cycle, but the basin is much smaller.  Table~\ref{tab:compass-slope} shows how
 quickly the basin collapses as the slope increases.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Compass-gait slope sweep, $3\times3$ grid of initial states at each
+\caption{\textbf{Compass-gait slope sweep.}  A $3\times3$ grid of initial states at each
 slope.  ``Success'' means a sustained gait for the full simulation.  The
 nominal slope is 0.0525~rad; the period is the mean over successful runs.}
 \label{tab:compass-slope}
@@ -1097,6 +1144,14 @@ $\gamma$ (rad) & successful runs & success fraction & mean period (s) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+The successful set in Table~\ref{tab:compass-slope} is not fixed: at
+\(\gamma=0.02\) the working states have \(\dot\theta_{st}\approx-1.5\)~rad/s,
+whereas at the nominal slope they need \(-2.0\) to \(-2.5\)~rad/s.  The basin
+therefore moves with the slope as well as shrinking, which is worse for a
+controller than a small but stationary basin.  The mean period grows only from
+0.705 to 0.730~s, so the failure at 0.08~rad is a loss of the cycle, not a
+timing effect.
 
 \section{Examples 4.5 and 4.6: SLIP simulation and the apex-to-apex map}
 \label{sec:ex45}
@@ -1128,7 +1183,7 @@ interpolation.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{ch4_slip_map.png}
-\caption{SLIP apex-to-apex map.  The stable fixed point is at 0.8776~m with
+\caption{\textbf{SLIP fixed points versus energy.}  Apex-to-apex map.  The stable fixed point is at 0.8776~m with
 $P'=0.42$; the unstable one is at 0.9163~m with $P'=1.29$.  Filled points are
 stable fixed points.}
 \end{figure}
@@ -1145,7 +1200,7 @@ and pushes change the energy and are outside the map; this is the partial
 stability discussed in the notes.  The apex map is useful for one-step
 controllers, but a real robot still needs energy regulation.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
 \caption{SLIP apex-to-apex map at $\theta_{td}=30^\circ$ for three energies.
@@ -1253,10 +1308,10 @@ the achieved height tracks the target to a few millimetres and that the
 preload rises almost linearly with $h$; panel (b) shows that a lower start
 needs a larger first preload but converges to the same cycle.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Hopper sensitivity over 8~s runs, with statistics from the last 2~s.
+\caption{\textbf{Hopper sensitivity.}  Over 8~s runs, with statistics from the last 2~s.
 (a) Target height, starting from the matching body height.
 (b) Initial body height with $h=1$~m.}
 \label{tab:hopper-sens}
@@ -1287,6 +1342,15 @@ $z_b(0)$ (m) & achieved max (m) & error (mm) & max preload (m) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+In panel (a) the preload grows by about 0.278~m per metre of target height,
+\((0.302-0.024)/(1.5-0.5)\), which is the linear term \(\tfrac12 z_b\) in the
+energy formula once the gravity term is included.  The error stays below
+6.3~mm and is always negative: the apex is slightly below the target because
+the inelastic impact at lift-off removes more energy than the idealised
+massless-spring model assumes.  Panel (b) shows that the initial height changes
+only the first preload (0.403~m at \(z_b(0)=0.1\) versus 0.037~m at 1.0~m) and
+leaves the steady cycle identical, which is what the energy argument predicts.
 
 \section{Implementation notes}
 
@@ -1408,10 +1472,10 @@ after a velocity push the feedback run returns to within
 \(1.2\times10^{-6}\)~m of the nominal endpoint.}
 \end{figure}
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{ZMP timing sensitivity.  Each row re-plans the CoM for the same
+\caption{\textbf{ZMP timing sensitivity.}  Each row re-plans the CoM for the same
 footsteps with the stated double-support (DS) and single-support (SS)
 durations.  The nominal row is DS~0.5/SS~1.0.}
 \label{tab:zmp-timing}
@@ -1426,6 +1490,11 @@ DS / SS (s) & duration (s) & max ZMP error (m) & RMS error (m) & final $x$ (m) \
 \bottomrule
 \end{tabular}
 \end{table}
+
+The peak error is not monotone in the total duration: the DS~1.0/SS~1.0 plan
+lasts 11~s but has a lower peak than the DS~0.2/SS~1.4 plan at 9.4~s.  The
+quantity that correlates with the error is the single-support fraction, not the
+horizon, which is why the table is ordered by DS/SS rather than by duration.
 
 \section{Example 5.2: LittleDog Gait Optimization}
 \label{sec:ex52}
@@ -1450,10 +1519,10 @@ and foot-clearance numbers are small, which is what a walking trot should look
 like; the uneven peak normal forces (front-left 43~N versus front-right 20~N)
 show that the optimiser did not enforce left--right symmetry.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{LittleDog optimised gait metrics (SNOPT, major-iteration limit 100).}
+\caption{\textbf{LittleDog gait metrics.}  Optimised gait (SNOPT, major-iteration limit 100).}
 \label{tab:littledog}
 \begin{tabular}{@{}ll@{}}
 \toprule
@@ -1583,10 +1652,10 @@ detours (the 1.2~m and larger rows use \texttt{uses\_lateral = False}).
 Table~\ref{tab:footstep-scaling} adds bridge stones; the MIQP time grows from
 1.0 to 5.4~s while GCS grows from 0.21 to 0.74~s on the same instances.
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Step-span sensitivity of the MIQP on terrain~B.  ``--'' means the
+\caption{\textbf{Step-span sensitivity.}  MIQP on terrain~B.  ``--'' means the
 problem is infeasible at that span.  Costs are the quadratic step-length
 objective, so they are not directly comparable across different stone sets.}
 \label{tab:footstep-span}
@@ -1609,10 +1678,10 @@ span (m) & feasible & cost & steps & solve time (s) \\
 \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
 \centering
 \small
-\caption{Scaling with the number of bridge stones.  The same instances are
+\caption{\textbf{MIQP versus GCS scaling.}  Scaling with the number of bridge stones.  The same instances are
 solved by MIQP (branch and bound with OSQP) and GCS (convex relaxation with
 SNOPT for the rounded paths).}
 \label{tab:footstep-scaling}
